@@ -205,37 +205,36 @@ class SimpleRAGSystem:
         
         return "\n".join(response_parts)
     
-    def generate_quiz(self, topic, profile):
-        quiz_questions = {
-            'quantum numbers': [
-                "What are the four quantum numbers?",
-                "Which quantum number describes electron spin?",
-                "What does the principal quantum number represent?"
-            ],
-            'chemical bonding': [
-                "What is the difference between ionic and covalent bonds?",
-                "How do electronegativity differences affect bonding?",
-                "What is a coordinate covalent bond?"
-            ],
-            'photosynthesis': [
-                "What are the reactants of photosynthesis?",
-                "Where does the light-dependent reaction occur?",
-                "What is the role of chlorophyll?"
-            ]
-        }
+    def generate_quiz(self, topic, profile, num_questions=3):
+        """Generate quiz questions for ANY topic dynamically"""
+        # Generic question templates that work for any topic
+        question_templates = [
+            f"What is the main concept of {topic}?",
+            f"Explain the key principles of {topic}.",
+            f"How would you apply {topic} in real-world scenarios?",
+            f"What are the important components or elements of {topic}?",
+            f"Describe the relationship between different aspects of {topic}.",
+            f"What are common misconceptions about {topic}?",
+            f"How does {topic} relate to other concepts you've learned?",
+            f"What are the practical applications of {topic}?",
+            f"Explain {topic} in your own words.",
+            f"What challenges might you face when learning {topic}?"
+        ]
         
-        topic_lower = topic.lower()
-        for key in quiz_questions:
-            if key in topic_lower:
-                questions = quiz_questions[key]
-                return random.sample(questions, min(2, len(questions)))
-        
-        return ["What did you learn from this topic?", "How would you explain this to a friend?"]
+        # Select random questions based on num_questions
+        selected = random.sample(question_templates, min(num_questions, len(question_templates)))
+        return selected
 
 class ChatInterface:
     def __init__(self):
         self.rag_system = SimpleRAGSystem()
         self.current_user = None
+        self.conversation_context = {
+            'current_topic': None,
+            'follow_up_count': 0,
+            'max_follow_ups': 10,
+            'topic_content': None
+        }
         
     def collect_profile(self):
         print("🎓 Welcome to Adaptive Learning Assistant!")
@@ -274,7 +273,7 @@ class ChatInterface:
     
     def chat_loop(self):
         print("\n🤖 RAG Assistant is ready!")
-        print("Commands: 'quiz' for practice questions, 'profile' to see your info, 'quit' to exit\n")
+        print("Commands: 'quiz' for practice questions, 'profile' to see your info, 'new topic' to reset, 'quit' to exit\n")
         
         while True:
             user_input = input(f"💬 {self.current_user['name']}: ").strip()
@@ -288,16 +287,39 @@ class ChatInterface:
                     print(f"  {key.title()}: {value}")
                 print()
                 continue
+            elif user_input.lower() == 'new topic':
+                self.conversation_context = {
+                    'current_topic': None,
+                    'follow_up_count': 0,
+                    'max_follow_ups': 10,
+                    'topic_content': None
+                }
+                print("✅ Context reset. Ask me about a new topic!\n")
+                continue
             elif user_input.lower() == 'quiz':
                 self.generate_quiz_session()
                 continue
             elif not user_input:
                 continue
             
-            print("\n🔍 Searching knowledge base...")
+            # Track follow-up context
+            if self.conversation_context['current_topic']:
+                self.conversation_context['follow_up_count'] += 1
+                if self.conversation_context['follow_up_count'] <= self.conversation_context['max_follow_ups']:
+                    print(f"\n💡 Follow-up {self.conversation_context['follow_up_count']}/{self.conversation_context['max_follow_ups']} on: {self.conversation_context['current_topic']}")
+                else:
+                    print("\n📚 Reached follow-up limit. Searching for new context...")
+                    self.conversation_context['follow_up_count'] = 0
+            else:
+                print("\n🔍 Searching knowledge base...")
             
             # Retrieve documents
             retrieved_docs = self.rag_system.retrieve_documents(user_input)
+            
+            # Update context for new topics
+            if retrieved_docs and self.conversation_context['follow_up_count'] == 0:
+                self.conversation_context['current_topic'] = retrieved_docs[0].get('topic', user_input)
+                self.conversation_context['topic_content'] = retrieved_docs[0].get('content', '')
             
             # Generate response
             response = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
@@ -306,30 +328,34 @@ class ChatInterface:
             print(response)
             print("="*60 + "\n")
             
-            # Offer quiz
-            if retrieved_docs:
-                quiz_offer = input("🎯 Would you like a quiz on this topic? (y/n): ").lower()
-                if quiz_offer == 'y':
-                    topic = retrieved_docs[0]['topic']
-                    self.run_quiz(topic)
+            # Offer quiz based on user's query
+            quiz_offer = input("🎯 Would you like a quiz on this topic? (y/n): ").lower()
+            if quiz_offer == 'y':
+                topic = self.conversation_context['current_topic'] or user_input
+                self.run_quiz(topic)
     
     def generate_quiz_session(self):
-        topics = ['quantum numbers', 'chemical bonding', 'photosynthesis', 'calculus', 'newton laws']
-        print("\n📚 Available quiz topics:")
-        for i, topic in enumerate(topics, 1):
-            print(f"  {i}. {topic.title()}")
+        print("\n📚 Quiz Generator")
+        print("Enter any topic you want to practice (e.g., arrays, photosynthesis, calculus, etc.)")
+        
+        topic = input("\n🎯 Topic: ").strip()
+        
+        if not topic:
+            print("❌ Please enter a valid topic!")
+            return
         
         try:
-            choice = int(input("\nSelect topic (1-5): ")) - 1
-            if 0 <= choice < len(topics):
-                self.run_quiz(topics[choice])
-            else:
-                print("Invalid choice!")
+            num_questions = int(input("📝 Number of questions (1-10): ").strip() or "3")
+            num_questions = max(1, min(10, num_questions))  # Clamp between 1-10
         except ValueError:
-            print("Please enter a number!")
+            num_questions = 3
+            print("Using default: 3 questions")
+        
+        self.run_quiz(topic, num_questions)
     
-    def run_quiz(self, topic):
-        questions = self.rag_system.generate_quiz(topic, self.current_user)
+    def run_quiz(self, topic, num_questions=3):
+        print(f"\n⏳ Generating {num_questions} questions about '{topic}'...")
+        questions = self.rag_system.generate_quiz(topic, self.current_user, num_questions)
         score = 0
         
         print(f"\n🎯 Quiz: {topic.title()}")

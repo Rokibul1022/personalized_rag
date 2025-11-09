@@ -694,6 +694,13 @@ class ChatInterface:
         self.rag_system = LocalLLMRAGSystem(model_path)
         self.current_user = None
         self.interactions = []
+        self.conversation_context = {
+            'current_topic': None,
+            'follow_up_count': 0,
+            'max_follow_ups': 10,
+            'topic_content': None,
+            'last_response': None
+        }
         
     def collect_profile(self):
         print(" Welcome to DeepSeek-R1 Personalized Learning Assistant!")
@@ -746,9 +753,48 @@ class ChatInterface:
         with open('user_interactions.json', 'w') as f:
             json.dump(self.interactions, f, indent=2)
     
+    def is_follow_up_question(self, user_input):
+        """Detect if this is a follow-up question"""
+        follow_up_indicators = ['how', 'why', 'what about', 'can you explain', 'tell me more', 
+                                'elaborate', 'example', 'more details', 'clarify', 'also', 'what is',
+                                'what are', 'explain', 'describe', 'tell me']
+        user_lower = user_input.lower()
+        return any(indicator in user_lower for indicator in follow_up_indicators)
+    
+    def generate_llm_follow_up_response(self, user_input):
+        """Generate response using LLM with conversation context for follow-ups"""
+        prompt = f"""You are a personalized learning assistant.
+
+Student Profile:
+- Name: {self.current_user.get('name', 'Student')}
+- Grade: {self.current_user.get('grade', 'Not specified')}
+- Learning Style: {self.current_user.get('learning_style', 'Not specified')}
+- Difficulty: {self.current_user.get('difficulty', 'medium')}
+
+Previous Topic: {self.conversation_context['current_topic']}
+Previous Discussion: {self.conversation_context['last_response'][:500] if self.conversation_context['last_response'] else 'None'}
+
+Follow-up Question: {user_input}
+
+Provide a clear, educational answer that:
+1. Directly addresses their follow-up question
+2. Builds on the previous topic context
+3. Uses their learning style and difficulty level
+4. Includes examples if helpful
+5. Keep it concise (under 300 words)
+
+Answer:"""
+        
+        if self.rag_system.llm == "ollama":
+            return self.rag_system.call_ollama(prompt)
+        elif isinstance(self.rag_system.llm, dict):
+            return self.rag_system.call_transformers(prompt)
+        else:
+            return f"Follow-up on {self.conversation_context['current_topic']}: {user_input}"
+    
     def chat_loop(self):
         print("\n DeepSeek-R1 Assistant is ready!")
-        print("Commands: 'quiz' for practice, 'finetune' to improve, 'profile' for info, 'quit' to exit\n")
+        print("Commands: 'quiz' for practice, 'finetune' to improve, 'profile' for info, 'new topic' to reset, 'quit' to exit\n")
         
         while True:
             user_input = input(f" {self.current_user['name']}: ").strip()
@@ -762,6 +808,16 @@ class ChatInterface:
                     print(f"  {key.title()}: {value}")
                 print()
                 continue
+            elif user_input.lower() == 'new topic':
+                self.conversation_context = {
+                    'current_topic': None,
+                    'follow_up_count': 0,
+                    'max_follow_ups': 10,
+                    'topic_content': None,
+                    'last_response': None
+                }
+                print(" Context reset. Ask me about a new topic!\n")
+                continue
             elif user_input.lower() == 'quiz':
                 self.generate_quiz_session()
                 continue
@@ -773,13 +829,43 @@ class ChatInterface:
             elif not user_input:
                 continue
             
-            print("\n Searching knowledge base and generating response...")
+            # Check if this is a follow-up question
+            is_follow_up = (self.conversation_context['current_topic'] is not None and 
+                           self.is_follow_up_question(user_input) and
+                           self.conversation_context['follow_up_count'] < self.conversation_context['max_follow_ups'])
             
-            # Retrieve documents
-            retrieved_docs = self.rag_system.retrieve_documents(user_input)
-            
-            # Generate response
-            response, is_new_topic = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+            if is_follow_up:
+                # Use LLM for follow-up questions
+                print(f"\n Follow-up {self.conversation_context['follow_up_count'] + 1}/{self.conversation_context['max_follow_ups']} on: {self.conversation_context['current_topic']}")
+                print(" Using DeepSeek-R1 with context...")
+                
+                response = self.generate_llm_follow_up_response(user_input)
+                self.conversation_context['follow_up_count'] += 1
+                self.conversation_context['last_response'] = response
+                is_new_topic = False
+            else:
+                # New topic or exceeded follow-up limit - use RAG
+                if self.conversation_context['follow_up_count'] >= self.conversation_context['max_follow_ups']:
+                    print("\n Reached follow-up limit. Searching knowledge base for new context...")
+                else:
+                    print("\n Searching knowledge base and generating response...")
+                
+                # Retrieve documents
+                retrieved_docs = self.rag_system.retrieve_documents(user_input)
+                
+                # Generate response
+                response, is_new_topic = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+                
+                # Update conversation context
+                if retrieved_docs:
+                    self.conversation_context['current_topic'] = retrieved_docs[0].get('topic', user_input)
+                    self.conversation_context['topic_content'] = retrieved_docs[0].get('content', '')
+                else:
+                    self.conversation_context['current_topic'] = user_input
+                    self.conversation_context['topic_content'] = response
+                
+                self.conversation_context['follow_up_count'] = 0
+                self.conversation_context['last_response'] = response
             
             print("\n" + "="*60)
             print(response)
@@ -801,6 +887,8 @@ class ChatInterface:
     def start(self):
         print(" Starting DeepSeek-R1 Learning Assistant...")
         print(" Using advanced reasoning capabilities for personalized education")
+        print(" NEW: Intelligent follow-up handling - up to 10 contextual follow-ups per topic!")
+        print("   Type 'new topic' to reset context anytime.\n")
         
         # Check for existing user
         name = input("Enter your name (or 'new' for new user): ").strip()

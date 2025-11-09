@@ -182,19 +182,19 @@ Format your response with emojis and clear sections like:
 
         return self.call_gemini_api(prompt)
     
-    def generate_quiz(self, topic, profile):
-        """Generate quiz questions using Gemini API"""
-        prompt = f"""Create 3 educational quiz questions about "{topic}" for a student with this profile:
+    def generate_quiz(self, topic, profile, num_questions=3):
+        """Generate quiz questions using Gemini API for ANY topic"""
+        prompt = f"""Create {num_questions} educational quiz questions about "{topic}" for a student with this profile:
 - Name: {profile.get('name', 'Student')}
 - Grade: {profile.get('grade', 'Not specified')}
 - Difficulty Preference: {profile.get('difficulty', 'medium')}
 
-Make the questions appropriate for their level. Format as:
+Make the questions appropriate for their level and topic. Format as:
 Q1: [question]
 Q2: [question]  
-Q3: [question]
+Q{num_questions}: [question]
 
-Keep questions clear and educational."""
+Keep questions clear, educational, and directly related to {topic}."""
 
         response = self.call_gemini_api(prompt)
         
@@ -206,16 +206,22 @@ Keep questions clear and educational."""
                 question = line.split(':', 1)[1].strip() if ':' in line else line.strip()
                 questions.append(question)
         
-        return questions[:3] if questions else [
+        return questions[:num_questions] if questions else [
             f"What is the main concept of {topic}?",
             f"How would you apply {topic} in real life?",
             f"What are the key components of {topic}?"
-        ]
+        ][:num_questions]
 
 class ChatInterface:
     def __init__(self):
         self.rag_system = GeminiRAGSystem()
         self.current_user = None
+        self.conversation_context = {
+            'current_topic': None,
+            'follow_up_count': 0,
+            'max_follow_ups': 10,
+            'topic_content': None
+        }
         
     def collect_profile(self):
         print("🎓 Welcome to AI-Powered Learning Assistant!")
@@ -252,9 +258,41 @@ class ChatInterface:
                 return json.load(f)
         return None
     
+    def is_follow_up_question(self, user_input):
+        """Detect if this is a follow-up question"""
+        follow_up_indicators = ['how', 'why', 'what about', 'can you explain', 'tell me more', 
+                                'elaborate', 'example', 'more details', 'clarify', 'also']
+        return any(indicator in user_input.lower() for indicator in follow_up_indicators)
+    
+    def generate_llm_follow_up_response(self, user_input):
+        """Generate response using LLM with conversation context"""
+        prompt = f"""You are a personalized learning assistant. 
+
+Student Profile:
+- Name: {self.current_user.get('name', 'Student')}
+- Grade: {self.current_user.get('grade', 'Not specified')}
+- Learning Style: {self.current_user.get('learning_style', 'Not specified')}
+- Difficulty: {self.current_user.get('difficulty', 'medium')}
+
+Current Topic Context: {self.conversation_context['current_topic']}
+Previous Content: {self.conversation_context['topic_content']}
+
+Follow-up Question: {user_input}
+
+Provide a clear, educational answer that:
+1. Directly addresses their follow-up question
+2. Builds on the previous topic context
+3. Uses their learning style and difficulty level
+4. Includes examples if helpful
+5. Keep it concise and focused
+
+Format with emojis and clear sections."""
+        
+        return self.rag_system.call_gemini_api(prompt)
+    
     def chat_loop(self):
         print("\n🤖 AI Learning Assistant is ready!")
-        print("Commands: 'quiz' for practice questions, 'profile' to see your info, 'quit' to exit\n")
+        print("Commands: 'quiz' for practice questions, 'profile' to see your info, 'new topic' to reset, 'quit' to exit\n")
         
         while True:
             user_input = input(f"💬 {self.current_user['name']}: ").strip()
@@ -268,48 +306,86 @@ class ChatInterface:
                     print(f"  {key.title()}: {value}")
                 print()
                 continue
+            elif user_input.lower() == 'new topic':
+                self.conversation_context = {
+                    'current_topic': None,
+                    'follow_up_count': 0,
+                    'max_follow_ups': 10,
+                    'topic_content': None
+                }
+                print("✅ Context reset. Ask me about a new topic!\n")
+                continue
             elif user_input.lower() == 'quiz':
                 self.generate_quiz_session()
                 continue
             elif not user_input:
                 continue
             
-            print("\n🔍 Searching knowledge base and generating AI response...")
+            # Check if this is a follow-up question
+            is_follow_up = (self.conversation_context['current_topic'] is not None and 
+                           self.is_follow_up_question(user_input) and
+                           self.conversation_context['follow_up_count'] < self.conversation_context['max_follow_ups'])
             
-            # Retrieve documents
-            retrieved_docs = self.rag_system.retrieve_documents(user_input)
-            
-            # Generate AI response
-            response = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+            if is_follow_up:
+                # Use LLM for follow-up questions
+                print(f"\n💡 Follow-up {self.conversation_context['follow_up_count'] + 1}/{self.conversation_context['max_follow_ups']} - Using AI context...")
+                response = self.generate_llm_follow_up_response(user_input)
+                self.conversation_context['follow_up_count'] += 1
+            else:
+                # New topic or exceeded follow-up limit - use RAG
+                if self.conversation_context['follow_up_count'] >= self.conversation_context['max_follow_ups']:
+                    print("\n📚 Reached follow-up limit. Searching knowledge base for new context...")
+                else:
+                    print("\n🔍 Searching knowledge base and generating AI response...")
+                
+                # Retrieve documents
+                retrieved_docs = self.rag_system.retrieve_documents(user_input)
+                
+                # Generate AI response
+                response = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+                
+                # Update conversation context
+                if retrieved_docs:
+                    self.conversation_context['current_topic'] = retrieved_docs[0].get('topic', user_input)
+                    self.conversation_context['topic_content'] = retrieved_docs[0].get('content', '')
+                else:
+                    self.conversation_context['current_topic'] = user_input
+                    self.conversation_context['topic_content'] = response
+                
+                self.conversation_context['follow_up_count'] = 0
             
             print("\n" + "="*60)
             print(response)
             print("="*60 + "\n")
             
-            # Offer quiz
-            if retrieved_docs:
-                quiz_offer = input("🎯 Would you like a quiz on this topic? (y/n): ").lower()
-                if quiz_offer == 'y':
-                    topic = retrieved_docs[0]['topic']
-                    self.run_quiz(topic)
+            # Offer quiz based on user's query
+            quiz_offer = input("🎯 Would you like a quiz on this topic? (y/n): ").lower()
+            if quiz_offer == 'y':
+                topic = self.conversation_context['current_topic'] or user_input
+                self.run_quiz(topic)
     
     def generate_quiz_session(self):
-        topics = ['mathematics', 'physics', 'chemistry', 'biology', 'computer science']
-        print("\n📚 Available quiz topics:")
-        for i, topic in enumerate(topics, 1):
-            print(f"  {i}. {topic.title()}")
+        print("\n📚 Quiz Generator")
+        print("Enter any topic you want to practice (e.g., arrays, photosynthesis, calculus, etc.)")
+        
+        topic = input("\n🎯 Topic: ").strip()
+        
+        if not topic:
+            print("❌ Please enter a valid topic!")
+            return
         
         try:
-            choice = int(input("\nSelect topic (1-5): ")) - 1
-            if 0 <= choice < len(topics):
-                self.run_quiz(topics[choice])
-            else:
-                print("Invalid choice!")
+            num_questions = int(input("📝 Number of questions (1-10): ").strip() or "3")
+            num_questions = max(1, min(10, num_questions))  # Clamp between 1-10
         except ValueError:
-            print("Please enter a number!")
+            num_questions = 3
+            print("Using default: 3 questions")
+        
+        self.run_quiz(topic, num_questions)
     
-    def run_quiz(self, topic):
-        questions = self.rag_system.generate_quiz(topic, self.current_user)
+    def run_quiz(self, topic, num_questions=3):
+        print(f"\n⏳ Generating {num_questions} questions about '{topic}'...")
+        questions = self.rag_system.generate_quiz(topic, self.current_user, num_questions)
         score = 0
         
         print(f"\n🎯 AI-Generated Quiz: {topic.title()}")
