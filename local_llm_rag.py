@@ -19,8 +19,12 @@ PROFILES_DIR.mkdir(exist_ok=True)
 MODELS_DIR.mkdir(exist_ok=True)
 
 class LocalLLMRAGSystem:
-    def __init__(self, model_path=None):
+    def __init__(self, model_path=None, user_name=None):
+        self.user_name = user_name
+        self.user_kb_file = PROFILES_DIR / f"{user_name}_knowledge_base.csv" if user_name else None
+        
         self.kb = self.load_knowledge_base()
+        self.user_kb = self.load_user_knowledge_base()
         self.retriever = self.build_retriever()
         self.llm = self.load_local_llm(model_path)
         
@@ -128,6 +132,71 @@ class LocalLLMRAGSystem:
         except Exception as e:
             return f"Error with local model: {e}"
     
+    def load_user_knowledge_base(self):
+        """Load user's personal knowledge base"""
+        if not self.user_kb_file or not self.user_kb_file.exists():
+            # Create new user KB with columns
+            df = pd.DataFrame(columns=['timestamp', 'query', 'topic', 'response', 'quiz_score', 'level', 'type'])
+            if self.user_kb_file:
+                df.to_csv(self.user_kb_file, index=False)
+                print(f"💾 Created knowledge base: {self.user_kb_file.name}")
+            return df
+        
+        return pd.read_csv(self.user_kb_file)
+    
+    def save_to_user_kb(self, query, topic, response='', quiz_score=None, level=None, entry_type='query'):
+        """Save entry to user's knowledge base"""
+        if not self.user_kb_file:
+            return
+        
+        new_entry = pd.DataFrame([{
+            'timestamp': pd.Timestamp.now(),
+            'query': query,
+            'topic': topic,
+            'response': response[:500] if response else '',
+            'quiz_score': quiz_score,
+            'level': level,
+            'type': entry_type
+        }])
+        
+        self.user_kb = pd.concat([self.user_kb, new_entry], ignore_index=True)
+        self.user_kb.to_csv(self.user_kb_file, index=False)
+    
+    def is_topic_in_user_kb(self, topic):
+        """Check if topic exists in user's knowledge base"""
+        if self.user_kb.empty:
+            return False
+        
+        topic_lower = topic.lower()
+        topic_terms = set(self.normalize_text(topic).split())
+        
+        for existing_topic in self.user_kb['topic'].dropna():
+            existing_lower = str(existing_topic).lower()
+            existing_terms = set(self.normalize_text(existing_topic).split())
+            
+            # Check for word containment or overlap
+            for term in topic_terms:
+                if len(term) > 3:  # Only meaningful words
+                    for existing_term in existing_terms:
+                        if term in existing_term or existing_term in term:
+                            return True
+            
+            # Check direct containment
+            if topic_lower in existing_lower or existing_lower in topic_lower:
+                return True
+        
+        return False
+    
+    def get_user_topic_level(self, topic):
+        """Get user's level for a specific topic"""
+        if self.user_kb.empty:
+            return None
+        
+        topic_entries = self.user_kb[self.user_kb['topic'].str.contains(topic, case=False, na=False)]
+        if not topic_entries.empty:
+            return topic_entries.iloc[-1]['level']
+        return None
+    
     def load_knowledge_base(self):
         csv_files = list(DATA_DIR.glob('*.csv'))
         if not csv_files:
@@ -156,7 +225,21 @@ class LocalLLMRAGSystem:
         return pd.DataFrame(all_data)
     
     def build_retriever(self):
-        if self.kb.empty:
+        # Combine global KB and user KB
+        combined_kb = self.kb.copy()
+        
+        if not self.user_kb.empty:
+            # Add user KB entries to combined KB
+            for _, row in self.user_kb.iterrows():
+                if pd.notna(row['query']) and pd.notna(row['topic']):
+                    content = f"topic: {row['topic']} | query: {row['query']} | response: {row['response']}"
+                    combined_kb = pd.concat([combined_kb, pd.DataFrame([{
+                        'content': content,
+                        'source': 'user_kb',
+                        'topic': row['topic']
+                    }])], ignore_index=True)
+        
+        if combined_kb.empty:
             return None
         
         self.vectorizer = TfidfVectorizer(
@@ -167,8 +250,9 @@ class LocalLLMRAGSystem:
             stop_words='english'
         )
         
-        normalized_content = [self.normalize_text(content) for content in self.kb['content']]
+        normalized_content = [self.normalize_text(content) for content in combined_kb['content']]
         self.doc_matrix = self.vectorizer.fit_transform(normalized_content)
+        self.kb = combined_kb
         return True
     
     def normalize_text(self, text):
@@ -691,8 +775,9 @@ Make questions simple and fundamental."""
 class ChatInterface:
     def __init__(self, model_path=None):
         print(" Initializing DeepSeek-R1 RAG System...")
-        self.rag_system = LocalLLMRAGSystem(model_path)
+        self.rag_system = None
         self.current_user = None
+        self.model_path = model_path
         self.interactions = []
         self.conversation_context = {
             'current_topic': None,
@@ -752,6 +837,29 @@ class ChatInterface:
         # Save to file
         with open('user_interactions.json', 'w') as f:
             json.dump(self.interactions, f, indent=2)
+    
+    def extract_topic_from_query(self, query):
+        """Extract main topic from user query"""
+        query_lower = query.lower()
+        
+        # Common question patterns
+        patterns = [
+            'what is ',
+            'what are ',
+            'tell me about ',
+            'explain ',
+            'define ',
+            'describe '
+        ]
+        
+        for pattern in patterns:
+            if pattern in query_lower:
+                topic = query_lower.split(pattern)[1].strip()
+                # Remove trailing question marks and extra words
+                topic = topic.replace('?', '').split(' in ')[0].split(' on ')[0].strip()
+                return topic
+        
+        return None
     
     def is_same_topic(self, user_input, current_topic):
         """Check if user input is about the same topic as current context"""
@@ -904,17 +1012,74 @@ Answer:"""
                     # Retrieve documents
                     retrieved_docs = self.rag_system.retrieve_documents(user_input)
                     
-                    # Generate response
-                    response, is_new_topic = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+                    # Extract topic from query itself, not just from retrieved docs
+                    query_topic = self.extract_topic_from_query(user_input)
+                    topic_name = query_topic if query_topic else (retrieved_docs[0].get('topic', user_input) if retrieved_docs else user_input)
                     
-                    # Update conversation context
+                    # Check if topic is new to user AND not a follow-up
+                    is_new_to_user = not self.rag_system.is_topic_in_user_kb(topic_name)
+                    is_related_to_current = self.is_same_topic(user_input, self.conversation_context['current_topic'])
+                    
+                    # Only assess if truly new AND not related to current conversation
+                    if is_new_to_user and not is_related_to_current and retrieved_docs:
+                        user_level = self.assess_new_topic(topic_name)
+                        print(f"✅ Assessment complete! Continuing with your question...\n")
+                    
+                    # Always use LLM with KB context for better responses
                     if retrieved_docs:
-                        self.conversation_context['current_topic'] = retrieved_docs[0].get('topic', user_input)
-                        self.conversation_context['topic_content'] = retrieved_docs[0].get('content', '')
+                        print("🤖 Generating enhanced answer using DeepSeek-R1 with knowledge base context...")
+                        
+                        # Build context from KB
+                        kb_context = "\n".join([f"- {doc['content'][:300]}" for doc in retrieved_docs[:2]])
+                        
+                        # Get user's level for this topic if available
+                        user_level = self.rag_system.get_user_topic_level(topic_name) or self.current_user.get('difficulty', 'medium')
+                        
+                        prompt = f"""You are a personalized learning assistant.
+
+Student Profile:
+- Name: {self.current_user.get('name', 'Student')}
+- Grade: {self.current_user.get('grade', 'Not specified')}
+- Learning Style: {self.current_user.get('learning_style', 'Not specified')}
+- Current Level on this topic: {user_level}
+
+Knowledge Base Context:
+{kb_context}
+
+Student Question: {user_input}
+
+Provide a clear, educational answer that:
+1. Uses the knowledge base context as reference
+2. Explains in simple terms appropriate for {user_level} level
+3. Includes practical examples
+4. Matches their learning style: {self.current_user.get('learning_style', 'general')}
+5. Keep it concise and engaging (under 400 words)
+
+Answer:"""
+                        
+                        if self.rag_system.llm == "ollama":
+                            response = self.rag_system.call_ollama(prompt)
+                        elif isinstance(self.rag_system.llm, dict):
+                            response = self.rag_system.call_transformers(prompt)
+                        else:
+                            response, is_new_topic = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+                        
+                        is_new_topic = False
                     else:
-                        self.conversation_context['current_topic'] = user_input
-                        self.conversation_context['topic_content'] = response
+                        # No KB context, use LLM directly
+                        response, is_new_topic = self.rag_system.generate_llm_response(user_input, self.current_user)
                     
+                    # Save query to user KB
+                    self.rag_system.save_to_user_kb(
+                        query=user_input,
+                        topic=topic_name,
+                        response=response,
+                        entry_type='query'
+                    )
+                    
+                    # Update conversation context with the ACTUAL topic from this query
+                    self.conversation_context['current_topic'] = topic_name
+                    self.conversation_context['topic_content'] = response
                     self.conversation_context['follow_up_count'] = 0
                     self.conversation_context['last_response'] = response
             
@@ -935,10 +1100,75 @@ Answer:"""
                 self.rag_system.learn_from_interaction(user_input, self.current_user, response, feedback)
                 print(" RAG system learned from your feedback!")
     
+    def assess_new_topic(self, topic):
+        """Assess user's knowledge on a new topic with 3 questions"""
+        print(f"\n🎯 New topic detected: {topic}")
+        print("📝 Let me assess your current understanding with 3 quick questions...\n")
+        
+        # Generate 3 assessment questions
+        prompt = f"""Generate exactly 3 simple assessment questions about "{topic}" to evaluate basic understanding.
+
+Format:
+Q1: [Question]
+Q2: [Question]
+Q3: [Question]
+
+Make questions clear and fundamental."""
+        
+        if self.rag_system.llm == "ollama":
+            response = self.rag_system.call_ollama(prompt)
+        else:
+            response = f"Q1: What is {topic}?\nQ2: What are key concepts in {topic}?\nQ3: How is {topic} used?"
+        
+        # Parse questions
+        questions = []
+        for line in response.split('\n'):
+            if line.strip().startswith('Q'):
+                q = line.split(':', 1)[1].strip() if ':' in line else line.strip()
+                questions.append(q)
+        
+        # Ask questions and collect answers
+        answers = []
+        for i, q in enumerate(questions[:3], 1):
+            print(f"Q{i}: {q}")
+            ans = input("👉 Your answer: ").strip()
+            answers.append(ans)
+        
+        # Evaluate level based on answers
+        answered = sum(1 for a in answers if len(a) > 10)
+        if answered >= 2:
+            level = "intermediate"
+            feedback = "👍 Good understanding! You have intermediate knowledge."
+        elif answered == 1:
+            level = "beginner"
+            feedback = "📚 Basic understanding. You're at beginner level."
+        else:
+            level = "novice"
+            feedback = "🌱 Starting fresh! You're at novice level."
+        
+        print(f"\n{feedback}")
+        print(f"💾 Saving assessment to your knowledge base...\n")
+        
+        # Save to user KB
+        self.rag_system.save_to_user_kb(
+            query=f"Assessment: {topic}",
+            topic=topic,
+            response=f"Questions: {questions[:3]}, Answers: {answers}",
+            quiz_score=f"{answered}/3",
+            level=level,
+            entry_type='assessment'
+        )
+        
+        # Rebuild retriever with new data
+        self.rag_system.build_retriever()
+        
+        return level
+    
     def start(self):
         print(" Starting DeepSeek-R1 Learning Assistant...")
         print(" Using advanced reasoning capabilities for personalized education")
-        print(" NEW: Intelligent follow-up handling - up to 10 contextual follow-ups per topic!")
+        print("💾 NEW: Personal knowledge base - All your learning tracked!")
+        print("💡 NEW: Intelligent follow-up handling - up to 10 contextual follow-ups per topic!")
         print("   Type 'new topic' to reset context anytime.\n")
         
         # Check for existing user
@@ -958,6 +1188,9 @@ Answer:"""
                 profile = self.collect_profile()
                 self.save_profile(profile)
                 self.current_user = profile
+        
+        # Initialize RAG with user name
+        self.rag_system = LocalLLMRAGSystem(self.model_path, self.current_user['name'])
         
         # Load existing interactions
         if Path('user_interactions.json').exists():
@@ -1124,23 +1357,26 @@ Answer:"""
         print("\n" + "=" * 50)
         print(f" Assessment Results: {score}/{total_questions} ({percentage:.1f}%)")
         
-        # Store assessment result
-        user_id = self.current_user.get('name', 'unknown')
-        if user_id not in self.rag_system.memory['user_preferences']:
-            self.rag_system.memory['user_preferences'][user_id] = {
-                'successful_topics': [],
-                'difficult_topics': [],
-                'preferred_style': self.current_user.get('learning_style', 'general'),
-                'interaction_count': 0
-            }
-        
+        # Determine level
         if percentage >= 70:
+            level = "intermediate"
             print(" You have good understanding of this topic!")
-            self.rag_system.memory['user_preferences'][user_id]['successful_topics'].append(topic)
         else:
+            level = "beginner"
             print(" This topic needs more practice. I'll provide extra support!")
-            self.rag_system.memory['user_preferences'][user_id]['difficult_topics'].append(topic)
         
+        # Save to user KB
+        self.rag_system.save_to_user_kb(
+            query=f"Assessment: {topic}",
+            topic=topic,
+            response="Quick assessment quiz",
+            quiz_score=f"{score}/{total_questions} ({percentage:.1f}%)",
+            level=level,
+            entry_type='assessment'
+        )
+        
+        # Rebuild retriever
+        self.rag_system.build_retriever()
         self.rag_system.save_memory()
     
     def run_advanced_quiz(self, topic, difficulty, num_questions):
@@ -1188,12 +1424,30 @@ Answer:"""
         
         if percentage >= 90:
             print(" Outstanding! You've mastered this topic!")
+            level = "advanced"
         elif percentage >= 70:
             print(" Great job! You have a solid understanding!")
+            level = "intermediate"
         elif percentage >= 50:
             print(" Good effort! Review the topics you missed.")
+            level = "beginner"
         else:
             print(" Keep studying! Focus on the fundamentals.")
+            level = "novice"
+        
+        # Save quiz results to user KB
+        print("💾 Saving quiz results to your knowledge base...")
+        self.rag_system.save_to_user_kb(
+            query=f"Quiz: {topic} ({difficulty})",
+            topic=topic,
+            response=f"{num_questions} questions, {difficulty} difficulty",
+            quiz_score=f"{score}/{total_questions} ({percentage:.1f}%)",
+            level=level,
+            entry_type='quiz'
+        )
+        
+        # Rebuild retriever with new data
+        self.rag_system.build_retriever()
     
     def show_rag_intelligence(self):
         memory = self.rag_system.memory
