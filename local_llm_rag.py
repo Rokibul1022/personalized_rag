@@ -753,6 +753,40 @@ class ChatInterface:
         with open('user_interactions.json', 'w') as f:
             json.dump(self.interactions, f, indent=2)
     
+    def is_same_topic(self, user_input, current_topic):
+        """Check if user input is about the same topic as current context"""
+        if not current_topic:
+            return False
+        
+        # Normalize both
+        user_lower = user_input.lower()
+        topic_lower = current_topic.lower()
+        
+        # Extract key terms from both
+        user_terms = set(self.rag_system.normalize_text(user_input).split())
+        topic_terms = set(self.rag_system.normalize_text(current_topic).split())
+        
+        # Remove common words
+        stop_words = {'what', 'is', 'the', 'how', 'why', 'tell', 'me', 'about', 'in', 'of', 'and', 'or', 'to', 'a', 'an', 'difference', 'between'}
+        user_terms = user_terms - stop_words
+        topic_terms = topic_terms - stop_words
+        
+        # Check for word containment (e.g., "regression" in "linear regression")
+        for topic_term in topic_terms:
+            if len(topic_term) > 3:  # Only meaningful words
+                for user_term in user_terms:
+                    if topic_term in user_term or user_term in topic_term:
+                        return True
+        
+        # Check overlap - need at least 20% common terms
+        if not user_terms or not topic_terms:
+            return False
+        
+        common_terms = user_terms & topic_terms
+        similarity = len(common_terms) / max(len(user_terms), len(topic_terms))
+        
+        return similarity >= 0.2
+    
     def is_follow_up_question(self, user_input):
         """Detect if this is a follow-up question"""
         follow_up_indicators = ['how', 'why', 'what about', 'can you explain', 'tell me more', 
@@ -829,43 +863,60 @@ Answer:"""
             elif not user_input:
                 continue
             
-            # Check if this is a follow-up question
-            is_follow_up = (self.conversation_context['current_topic'] is not None and 
-                           self.is_follow_up_question(user_input) and
-                           self.conversation_context['follow_up_count'] < self.conversation_context['max_follow_ups'])
+            # Check for special requests (quiz, preparation, etc.) - always use LLM
+            quiz_keywords = ['quiz', 'preparation', 'prepare', 'practice questions', 'test', 'exam', 'assessment']
+            is_quiz_request = any(keyword in user_input.lower() for keyword in quiz_keywords)
             
-            if is_follow_up:
-                # Use LLM for follow-up questions
-                print(f"\n Follow-up {self.conversation_context['follow_up_count'] + 1}/{self.conversation_context['max_follow_ups']} on: {self.conversation_context['current_topic']}")
-                print(" Using DeepSeek-R1 with context...")
-                
+            if is_quiz_request:
+                # Use LLM for quiz/preparation requests
+                print("\n🎯 Quiz/Preparation request detected - Using DeepSeek-R1...")
                 response = self.generate_llm_follow_up_response(user_input)
-                self.conversation_context['follow_up_count'] += 1
+                self.conversation_context['current_topic'] = user_input
+                self.conversation_context['follow_up_count'] = 0
                 self.conversation_context['last_response'] = response
                 is_new_topic = False
             else:
-                # New topic or exceeded follow-up limit - use RAG
-                if self.conversation_context['follow_up_count'] >= self.conversation_context['max_follow_ups']:
-                    print("\n Reached follow-up limit. Searching knowledge base for new context...")
+                # Check if this is a follow-up question on the SAME topic
+                is_same_topic = self.is_same_topic(user_input, self.conversation_context['current_topic'])
+                has_follow_up_pattern = self.is_follow_up_question(user_input)
+                
+                is_follow_up = (self.conversation_context['current_topic'] is not None and 
+                               is_same_topic and
+                               has_follow_up_pattern and
+                               self.conversation_context['follow_up_count'] < self.conversation_context['max_follow_ups'])
+                
+                if is_follow_up:
+                    # Use LLM for follow-up questions
+                    print(f"\n Follow-up {self.conversation_context['follow_up_count'] + 1}/{self.conversation_context['max_follow_ups']} on: {self.conversation_context['current_topic']}")
+                    print(" Using DeepSeek-R1 with context...")
+                    
+                    response = self.generate_llm_follow_up_response(user_input)
+                    self.conversation_context['follow_up_count'] += 1
+                    self.conversation_context['last_response'] = response
+                    is_new_topic = False
                 else:
-                    print("\n Searching knowledge base and generating response...")
-                
-                # Retrieve documents
-                retrieved_docs = self.rag_system.retrieve_documents(user_input)
-                
-                # Generate response
-                response, is_new_topic = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
-                
-                # Update conversation context
-                if retrieved_docs:
-                    self.conversation_context['current_topic'] = retrieved_docs[0].get('topic', user_input)
-                    self.conversation_context['topic_content'] = retrieved_docs[0].get('content', '')
-                else:
-                    self.conversation_context['current_topic'] = user_input
-                    self.conversation_context['topic_content'] = response
-                
-                self.conversation_context['follow_up_count'] = 0
-                self.conversation_context['last_response'] = response
+                    # New topic or exceeded follow-up limit - use RAG
+                    if self.conversation_context['follow_up_count'] >= self.conversation_context['max_follow_ups']:
+                        print("\n Reached follow-up limit. Searching knowledge base for new context...")
+                    else:
+                        print("\n Searching knowledge base and generating response...")
+                    
+                    # Retrieve documents
+                    retrieved_docs = self.rag_system.retrieve_documents(user_input)
+                    
+                    # Generate response
+                    response, is_new_topic = self.rag_system.generate_response(user_input, self.current_user, retrieved_docs)
+                    
+                    # Update conversation context
+                    if retrieved_docs:
+                        self.conversation_context['current_topic'] = retrieved_docs[0].get('topic', user_input)
+                        self.conversation_context['topic_content'] = retrieved_docs[0].get('content', '')
+                    else:
+                        self.conversation_context['current_topic'] = user_input
+                        self.conversation_context['topic_content'] = response
+                    
+                    self.conversation_context['follow_up_count'] = 0
+                    self.conversation_context['last_response'] = response
             
             print("\n" + "="*60)
             print(response)
