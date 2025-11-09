@@ -225,17 +225,17 @@ class LocalLLMRAGSystem:
         return pd.DataFrame(all_data)
     
     def build_retriever(self):
-        # Combine global KB and user KB
+        # Start with global KB (shared knowledge)
         combined_kb = self.kb.copy()
         
+        # Add ONLY this user's KB entries (not other users')
         if not self.user_kb.empty:
-            # Add user KB entries to combined KB
             for _, row in self.user_kb.iterrows():
                 if pd.notna(row['query']) and pd.notna(row['topic']):
-                    content = f"topic: {row['topic']} | query: {row['query']} | response: {row['response']}"
+                    content = f"topic: {row['topic']} | query: {row['query']} | user: {self.user_name} | response: {row['response'][:200]}"
                     combined_kb = pd.concat([combined_kb, pd.DataFrame([{
                         'content': content,
-                        'source': 'user_kb',
+                        'source': f'{self.user_name}_kb',
                         'topic': row['topic']
                     }])], ignore_index=True)
         
@@ -252,7 +252,7 @@ class LocalLLMRAGSystem:
         
         normalized_content = [self.normalize_text(content) for content in combined_kb['content']]
         self.doc_matrix = self.vectorizer.fit_transform(normalized_content)
-        self.kb = combined_kb
+        self.combined_kb = combined_kb  # Store combined KB separately
         return True
     
     def normalize_text(self, text):
@@ -274,8 +274,12 @@ class LocalLLMRAGSystem:
         
         # Advanced scoring with keyword matching
         query_terms = query_normalized.split()
-        for i, doc_content in enumerate(self.kb['content']):
+        for i, doc_content in enumerate(self.combined_kb['content']):
             doc_lower = doc_content.lower()
+            
+            # Boost user's own KB entries
+            if self.user_name and f'user: {self.user_name}' in doc_lower:
+                similarity_scores[i] *= 2.0
             
             # Exact phrase match - highest boost
             if query_normalized in doc_lower:
@@ -292,8 +296,8 @@ class LocalLLMRAGSystem:
         for idx in top_indices:
             if similarity_scores[idx] > 0.01:
                 results.append({
-                    'content': self.kb.iloc[idx]['content'],
-                    'topic': self.kb.iloc[idx]['topic'],
+                    'content': self.combined_kb.iloc[idx]['content'],
+                    'topic': self.combined_kb.iloc[idx]['topic'],
                     'score': float(similarity_scores[idx])
                 })
         
@@ -847,9 +851,12 @@ class ChatInterface:
             'what is ',
             'what are ',
             'tell me about ',
+            'tell me ',
             'explain ',
             'define ',
-            'describe '
+            'describe ',
+            'basics of ',
+            'basics about '
         ]
         
         for pattern in patterns:
@@ -857,9 +864,12 @@ class ChatInterface:
                 topic = query_lower.split(pattern)[1].strip()
                 # Remove trailing question marks and extra words
                 topic = topic.replace('?', '').split(' in ')[0].split(' on ')[0].strip()
+                # Remove 'the' prefix
+                if topic.startswith('the '):
+                    topic = topic[4:]
                 return topic
         
-        return None
+        return query_lower
     
     def is_same_topic(self, user_input, current_topic):
         """Check if user input is about the same topic as current context"""
@@ -1014,19 +1024,26 @@ Answer:"""
                     
                     # Extract topic from query itself, not just from retrieved docs
                     query_topic = self.extract_topic_from_query(user_input)
-                    topic_name = query_topic if query_topic else (retrieved_docs[0].get('topic', user_input) if retrieved_docs else user_input)
+                    topic_name = query_topic if query_topic else user_input
+                    
+                    # Check if retrieved docs are actually relevant (score threshold)
+                    is_relevant = retrieved_docs and retrieved_docs[0]['score'] > 0.3
+                    
+                    # If not relevant, ignore retrieved docs
+                    if not is_relevant:
+                        retrieved_docs = []
                     
                     # Check if topic is new to user AND not a follow-up
                     is_new_to_user = not self.rag_system.is_topic_in_user_kb(topic_name)
                     is_related_to_current = self.is_same_topic(user_input, self.conversation_context['current_topic'])
                     
-                    # Only assess if truly new AND not related to current conversation
-                    if is_new_to_user and not is_related_to_current and retrieved_docs:
+                    # Only assess if truly new AND not related to current conversation AND has relevant KB content
+                    if is_new_to_user and not is_related_to_current and is_relevant:
                         user_level = self.assess_new_topic(topic_name)
                         print(f"✅ Assessment complete! Continuing with your question...\n")
                     
-                    # Always use LLM with KB context for better responses
-                    if retrieved_docs:
+                    # Use LLM with KB context if relevant, otherwise LLM only
+                    if is_relevant:
                         print("🤖 Generating enhanced answer using DeepSeek-R1 with knowledge base context...")
                         
                         # Build context from KB
@@ -1066,7 +1083,8 @@ Answer:"""
                         
                         is_new_topic = False
                     else:
-                        # No KB context, use LLM directly
+                        # No relevant KB context, use LLM directly
+                        print("🤖 No relevant KB content found. Generating answer using DeepSeek-R1...")
                         response, is_new_topic = self.rag_system.generate_llm_response(user_input, self.current_user)
                     
                     # Save query to user KB
