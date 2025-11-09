@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Models and Data (large files)
+*.h5
+*.pkl
+*.pth
+*.bin
+*.onnx
+
+# User Data (sensitive)
+user_profiles/
+user_interactions.json
+local_models/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# API Keys (if any config files)
+.env
+config.ini
+
+# Temporary files
+*.tmp
+*.bak

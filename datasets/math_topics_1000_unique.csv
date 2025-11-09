@@ -1,0 +1,339 @@
+no,topic,description,example
+1,Addition,"Addition: concept explanation, key properties, and mathematical context.",Example: 3/4 + 2/5 = (15+8)/20 = 23/20 = 1.15.
+2,Subtraction,"Subtraction: concept explanation, key properties, and mathematical context.",Example: 3/4 + 2/5 = (15+8)/20 = 23/20 = 1.15.
+3,Multiplication,"Multiplication: concept explanation, key properties, and mathematical context.",Example: 3/4 + 2/5 = (15+8)/20 = 23/20 = 1.15.
+4,Division,"Division: concept explanation, key properties, and mathematical context.",Example: 3/4 + 2/5 = (15+8)/20 = 23/20 = 1.15.
+5,Fractions,"Fractions: concept explanation, key properties, and mathematical context.",Example: 3/4 + 2/5 = (15+8)/20 = 23/20 = 1.15.
+6,Decimals,"Decimals: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+7,Percentages,"Percentages: concept explanation, key properties, and mathematical context.",Example: 20% of 150 = 0.2 × 150 = 30.
+8,Ratios,"Ratios: concept explanation, key properties, and mathematical context.",Example: 2:3 = 4:6 shows proportionality.
+9,Proportion,"Proportion: concept explanation, key properties, and mathematical context.",Example: 2:3 = 4:6 shows proportionality.
+10,Powers,"Powers: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+11,Roots,"Roots: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+12,Exponents,"Exponents: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+13,Logarithms,"Logarithms: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+14,Linear Equation,"Linear Equation: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+15,Quadratic Equation,"Quadratic Equation: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+16,Polynomial Functions,"Polynomial Functions: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+17,Inequalities,"Inequalities: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+18,Systems of Equations,"Systems of Equations: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+19,Matrices,"Matrices: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+20,Determinant,"Determinant: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+21,Vector Algebra,"Vector Algebra: concept explanation, key properties, and mathematical context.","Example: a=(2,3), b=(1,4); dot=a·b=2*1+3*4=14."
+22,Complex Numbers,"Complex Numbers: concept explanation, key properties, and mathematical context.",Example: (2+3i)+(1−5i)=3−2i; |z|=√(a²+b²).
+23,Sequence and Series,"Sequence and Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+24,Binomial Theorem,"Binomial Theorem: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+25,Permutations,"Permutations: concept explanation, key properties, and mathematical context.","Example: P(5,2)=20; C(5,2)=10."
+26,Combinations,"Combinations: concept explanation, key properties, and mathematical context.","Example: P(5,2)=20; C(5,2)=10."
+27,Triangles,"Triangles: concept explanation, key properties, and mathematical context.",Example: Area of triangle = ½bh = ½×5×8 = 20.
+28,Circles,"Circles: concept explanation, key properties, and mathematical context.",Example: Area of triangle = ½bh = ½×5×8 = 20.
+29,Polygons,"Polygons: concept explanation, key properties, and mathematical context.",Example: Area of triangle = ½bh = ½×5×8 = 20.
+30,Coordinate Geometry,"Coordinate Geometry: concept explanation, key properties, and mathematical context.",Example: Area of triangle = ½bh = ½×5×8 = 20.
+31,Conic Sections,"Conic Sections: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+32,Ellipse,"Ellipse: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+33,Parabola,"Parabola: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+34,Hyperbola,"Hyperbola: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+35,Mensuration,"Mensuration: concept explanation, key properties, and mathematical context.",Example: 2:3 = 4:6 shows proportionality.
+36,Trigonometry,"Trigonometry: concept explanation, key properties, and mathematical context.",Example: sin(30°)=½; cos(60°)=½; tan(45°)=1.
+37,Sine Rule,"Sine Rule: concept explanation, key properties, and mathematical context.",Example: sin(30°)=½; cos(60°)=½; tan(45°)=1.
+38,Cosine Rule,"Cosine Rule: concept explanation, key properties, and mathematical context.",Example: sin(30°)=½; cos(60°)=½; tan(45°)=1.
+39,Tangents,"Tangents: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+40,Area and Perimeter,"Area and Perimeter: concept explanation, key properties, and mathematical context.",Example: Area of triangle = ½bh = ½×5×8 = 20.
+41,Limits,"Limits: concept explanation, key properties, and mathematical context.",Example: limₓ→0 (sinx/x)=1.
+42,Continuity,"Continuity: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+43,Differentiation,"Differentiation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+44,Integration,"Integration: concept explanation, key properties, and mathematical context.",Example: 2:3 = 4:6 shows proportionality.
+45,Differential Equations,"Differential Equations: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+46,Partial Derivatives,"Partial Derivatives: concept explanation, key properties, and mathematical context.",Example: d/dx(x³+2x)=3x²+2.
+47,Gradient,"Gradient: concept explanation, key properties, and mathematical context.","Example: F=(x²,y²,0); divF=∂x+∂y=2x+2y."
+48,Divergence,"Divergence: concept explanation, key properties, and mathematical context.","Example: F=(x²,y²,0); divF=∂x+∂y=2x+2y."
+49,Curl,"Curl: concept explanation, key properties, and mathematical context.","Example: F=(x²,y²,0); divF=∂x+∂y=2x+2y."
+50,Line Integral,"Line Integral: concept explanation, key properties, and mathematical context.",Example: ∫x²dx = x³/3 + C.
+51,Surface Integral,"Surface Integral: concept explanation, key properties, and mathematical context.",Example: ∫x²dx = x³/3 + C.
+52,Taylor Series,"Taylor Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+53,Maclaurin Series,"Maclaurin Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+54,Mean,"Mean: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+55,Median,"Median: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+56,Mode,"Mode: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+57,Variance,"Variance: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+58,Standard Deviation,"Standard Deviation: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+59,Probability,"Probability: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+60,Conditional Probability,"Conditional Probability: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+61,Bayes Theorem,"Bayes Theorem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+62,Random Variables,"Random Variables: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+63,Binomial Distribution,"Binomial Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+64,Normal Distribution,"Normal Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+65,Poisson Distribution,"Poisson Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+66,Hypothesis Testing,"Hypothesis Testing: concept explanation, key properties, and mathematical context.",Example: t-test: μ₁=μ₂? Compute t=(x̄₁−x̄₂)/SE; compare to t_crit.
+67,Regression,"Regression: concept explanation, key properties, and mathematical context.",Example: Simple linear regression y=2x+1; for x=3→ŷ=7.
+68,Correlation,"Correlation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+69,ANOVA,"ANOVA: concept explanation, key properties, and mathematical context.",Example: t-test: μ₁=μ₂? Compute t=(x̄₁−x̄₂)/SE; compare to t_crit.
+70,Vector Calculus,"Vector Calculus: concept explanation, key properties, and mathematical context.","Example: a=(2,3), b=(1,4); dot=a·b=2*1+3*4=14."
+71,Laplace Transform,"Laplace Transform: concept explanation, key properties, and mathematical context.",Example: L{sin(t)}=1/(s²+1).
+72,Fourier Transform,"Fourier Transform: concept explanation, key properties, and mathematical context.",Example: f(x)=sinx→Fourier transform F(ω)=π[i(δ(ω−1)−δ(ω+1))].
+73,Complex Integration,"Complex Integration: concept explanation, key properties, and mathematical context.",Example: 2:3 = 4:6 shows proportionality.
+74,Residue Theorem,"Residue Theorem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+75,Linear Algebra,"Linear Algebra: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+76,Eigenvalues,"Eigenvalues: concept explanation, key properties, and mathematical context.","Example: For A=[[2,0],[0,3]], eigenvalues λ₁=2, λ₂=3."
+77,Eigenvectors,"Eigenvectors: concept explanation, key properties, and mathematical context.","Example: a=(2,3), b=(1,4); dot=a·b=2*1+3*4=14."
+78,Diagonalization,"Diagonalization: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+79,Singular Value Decomposition,"Singular Value Decomposition: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+80,Matrix Decomposition,"Matrix Decomposition: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+81,Numerical Methods,"Numerical Methods: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+82,Optimization,"Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+83,Gradient Descent,"Gradient Descent: concept explanation, key properties, and mathematical context.","Example: F=(x²,y²,0); divF=∂x+∂y=2x+2y."
+84,Set Theory,"Set Theory: concept explanation, key properties, and mathematical context.","Example: A={1,2,3},B={2,3,4}; A∩B={2,3}, A∪B={1,2,3,4}."
+85,Logic,"Logic: concept explanation, key properties, and mathematical context.","Example: A={1,2,3},B={2,3,4}; A∩B={2,3}, A∪B={1,2,3,4}."
+86,Boolean Algebra,"Boolean Algebra: concept explanation, key properties, and mathematical context.","Example: A={1,2,3},B={2,3,4}; A∩B={2,3}, A∪B={1,2,3,4}."
+87,Graph Theory,"Graph Theory: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+88,Tree Traversal,"Tree Traversal: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+89,Shortest Path,"Shortest Path: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+90,Combinatorics,"Combinatorics: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+91,Counting Principles,"Counting Principles: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+92,Recurrence Relations,"Recurrence Relations: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+93,Generating Functions,"Generating Functions: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+94,Automata Theory,"Automata Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+95,Discrete Probability,"Discrete Probability: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+96,Number Theory,"Number Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+97,Modular Arithmetic,"Modular Arithmetic: concept explanation, key properties, and mathematical context.",Example: 3/4 + 2/5 = (15+8)/20 = 23/20 = 1.15.
+98,Prime Numbers,"Prime Numbers: concept explanation, key properties, and mathematical context.","Example: gcd(56,42)=14 via Euclidean algorithm."
+99,GCD and LCM,"GCD and LCM: concept explanation, key properties, and mathematical context.","Example: gcd(56,42)=14 via Euclidean algorithm."
+100,Group Theory,"Group Theory: concept explanation, key properties, and mathematical context.","Example: (ℤ,+) is abelian group; (ℝ,×) not group (no inverse for 0)."
+101,Ring Theory,"Ring Theory: concept explanation, key properties, and mathematical context.","Example: (ℤ,+) is abelian group; (ℝ,×) not group (no inverse for 0)."
+102,Field Theory,"Field Theory: concept explanation, key properties, and mathematical context.","Example: (ℤ,+) is abelian group; (ℝ,×) not group (no inverse for 0)."
+103,Vector Spaces,"Vector Spaces: concept explanation, key properties, and mathematical context.","Example: a=(2,3), b=(1,4); dot=a·b=2*1+3*4=14."
+104,Linear Transformations,"Linear Transformations: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+105,Abstract Algebra,"Abstract Algebra: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+106,Topology,"Topology: concept explanation, key properties, and mathematical context.","Example: Open set (0,1)⊂ℝ; union of opens is open."
+107,Metric Spaces,"Metric Spaces: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+108,Manifolds,"Manifolds: concept explanation, key properties, and mathematical context.",Example: Circle S¹ is 1‑D compact manifold embedded in ℝ².
+109,Differential Geometry,"Differential Geometry: concept explanation, key properties, and mathematical context.",Example: Area of triangle = ½bh = ½×5×8 = 20.
+110,Tensor Calculus,"Tensor Calculus: concept explanation, key properties, and mathematical context.",Example: Rank‑2 tensor Aᵢⱼ represents matrix; transforms under basis change.
+111,Measure Theory,"Measure Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+112,Functional Analysis,"Functional Analysis: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+113,Real Analysis,"Real Analysis: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+114,Complex Analysis,"Complex Analysis: concept explanation, key properties, and mathematical context.",Example: (2+3i)+(1−5i)=3−2i; |z|=√(a²+b²).
+115,Statistics in Machine Learning,"Statistics in Machine Learning: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+116,Optimization Algorithms,"Optimization Algorithms: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+117,Differential Equations in Physics,"Differential Equations in Physics: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+118,Probability in Finance,"Probability in Finance: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+119,Linear Regression,"Linear Regression: concept explanation, key properties, and mathematical context.",Example: Simple linear regression y=2x+1; for x=3→ŷ=7.
+120,Logistic Regression,"Logistic Regression: concept explanation, key properties, and mathematical context.",Example: Simple linear regression y=2x+1; for x=3→ŷ=7.
+121,Neural Networks,"Neural Networks: concept explanation, key properties, and mathematical context.",Example: Loss=(y−ŷ)²; update w←w−η∂L/∂w.
+122,Support Vector Machines,"Support Vector Machines: concept explanation, key properties, and mathematical context.","Example: a=(2,3), b=(1,4); dot=a·b=2*1+3*4=14."
+123,Principal Component Analysis,"Principal Component Analysis: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+124,Fourier Series Applications,"Fourier Series Applications: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+125,Game Theory,"Game Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+126,Chaos Theory,"Chaos Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+127,Fractals,"Fractals: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+128,Cryptography,"Cryptography: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+129,Information Theory,"Information Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+130,Control Theory,"Control Theory: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+131,Basic Equation,"Basic Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+132,Intermediate Equation,"Intermediate Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+133,Advanced Equation,"Advanced Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+134,Nonlinear Equation,"Nonlinear Equation: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+135,Cubic Equation,"Cubic Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+136,Stochastic Equation,"Stochastic Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+137,Deterministic Equation,"Deterministic Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+138,Discrete Equation,"Discrete Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+139,Continuous Equation,"Continuous Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+140,Differentiable Equation,"Differentiable Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+141,Integrable Equation,"Integrable Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+142,Convex Equation,"Convex Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+143,Concave Equation,"Concave Equation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+144,Basic Function,"Basic Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+145,Intermediate Function,"Intermediate Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+146,Advanced Function,"Advanced Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+147,Nonlinear Function,"Nonlinear Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+148,Linear Function,"Linear Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+149,Quadratic Function,"Quadratic Function: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+150,Cubic Function,"Cubic Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+151,Stochastic Function,"Stochastic Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+152,Deterministic Function,"Deterministic Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+153,Discrete Function,"Discrete Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+154,Continuous Function,"Continuous Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+155,Differentiable Function,"Differentiable Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+156,Integrable Function,"Integrable Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+157,Convex Function,"Convex Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+158,Concave Function,"Concave Function: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+159,Basic Curve,"Basic Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+160,Intermediate Curve,"Intermediate Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+161,Advanced Curve,"Advanced Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+162,Nonlinear Curve,"Nonlinear Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+163,Linear Curve,"Linear Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+164,Quadratic Curve,"Quadratic Curve: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+165,Cubic Curve,"Cubic Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+166,Stochastic Curve,"Stochastic Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+167,Deterministic Curve,"Deterministic Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+168,Discrete Curve,"Discrete Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+169,Continuous Curve,"Continuous Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+170,Differentiable Curve,"Differentiable Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+171,Integrable Curve,"Integrable Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+172,Convex Curve,"Convex Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+173,Concave Curve,"Concave Curve: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+174,Basic Series,"Basic Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+175,Intermediate Series,"Intermediate Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+176,Advanced Series,"Advanced Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+177,Nonlinear Series,"Nonlinear Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+178,Linear Series,"Linear Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+179,Quadratic Series,"Quadratic Series: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+180,Cubic Series,"Cubic Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+181,Stochastic Series,"Stochastic Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+182,Deterministic Series,"Deterministic Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+183,Discrete Series,"Discrete Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+184,Continuous Series,"Continuous Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+185,Differentiable Series,"Differentiable Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+186,Integrable Series,"Integrable Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+187,Convex Series,"Convex Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+188,Concave Series,"Concave Series: concept explanation, key properties, and mathematical context.","Example: Arithmetic series Sₙ=n(a₁+aₙ)/2; for 1+2+3+...+10, S₁₀=55."
+189,Basic Distribution,"Basic Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+190,Intermediate Distribution,"Intermediate Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+191,Advanced Distribution,"Advanced Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+192,Nonlinear Distribution,"Nonlinear Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+193,Linear Distribution,"Linear Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+194,Quadratic Distribution,"Quadratic Distribution: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+195,Cubic Distribution,"Cubic Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+196,Stochastic Distribution,"Stochastic Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+197,Deterministic Distribution,"Deterministic Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+198,Discrete Distribution,"Discrete Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+199,Continuous Distribution,"Continuous Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+200,Differentiable Distribution,"Differentiable Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+201,Integrable Distribution,"Integrable Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+202,Convex Distribution,"Convex Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+203,Concave Distribution,"Concave Distribution: concept explanation, key properties, and mathematical context.","Example: Toss a coin → P(Head)=½. Mean of [2,4,6]=4."
+204,Basic Matrix,"Basic Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+205,Intermediate Matrix,"Intermediate Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+206,Advanced Matrix,"Advanced Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+207,Nonlinear Matrix,"Nonlinear Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+208,Linear Matrix,"Linear Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+209,Quadratic Matrix,"Quadratic Matrix: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+210,Cubic Matrix,"Cubic Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+211,Stochastic Matrix,"Stochastic Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+212,Deterministic Matrix,"Deterministic Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+213,Discrete Matrix,"Discrete Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+214,Continuous Matrix,"Continuous Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+215,Differentiable Matrix,"Differentiable Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+216,Integrable Matrix,"Integrable Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+217,Convex Matrix,"Convex Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+218,Concave Matrix,"Concave Matrix: concept explanation, key properties, and mathematical context.","Example: det([[2,3],[1,4]]) = 2*4 - 3*1 = 5."
+219,Basic Transformation,"Basic Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+220,Intermediate Transformation,"Intermediate Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+221,Advanced Transformation,"Advanced Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+222,Nonlinear Transformation,"Nonlinear Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+223,Linear Transformation,"Linear Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+224,Quadratic Transformation,"Quadratic Transformation: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+225,Cubic Transformation,"Cubic Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+226,Stochastic Transformation,"Stochastic Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+227,Deterministic Transformation,"Deterministic Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+228,Discrete Transformation,"Discrete Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+229,Continuous Transformation,"Continuous Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+230,Differentiable Transformation,"Differentiable Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+231,Integrable Transformation,"Integrable Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+232,Convex Transformation,"Convex Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+233,Concave Transformation,"Concave Transformation: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+234,Basic Problem,"Basic Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+235,Intermediate Problem,"Intermediate Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+236,Advanced Problem,"Advanced Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+237,Nonlinear Problem,"Nonlinear Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+238,Linear Problem,"Linear Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+239,Quadratic Problem,"Quadratic Problem: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+240,Cubic Problem,"Cubic Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+241,Stochastic Problem,"Stochastic Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+242,Deterministic Problem,"Deterministic Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+243,Discrete Problem,"Discrete Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+244,Continuous Problem,"Continuous Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+245,Differentiable Problem,"Differentiable Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+246,Integrable Problem,"Integrable Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+247,Convex Problem,"Convex Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+248,Concave Problem,"Concave Problem: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+249,Basic Optimization,"Basic Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+250,Intermediate Optimization,"Intermediate Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+251,Advanced Optimization,"Advanced Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+252,Nonlinear Optimization,"Nonlinear Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+253,Linear Optimization,"Linear Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+254,Quadratic Optimization,"Quadratic Optimization: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+255,Cubic Optimization,"Cubic Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+256,Stochastic Optimization,"Stochastic Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+257,Deterministic Optimization,"Deterministic Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+258,Discrete Optimization,"Discrete Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+259,Continuous Optimization,"Continuous Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+260,Differentiable Optimization,"Differentiable Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+261,Integrable Optimization,"Integrable Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+262,Convex Optimization,"Convex Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+263,Concave Optimization,"Concave Optimization: concept explanation, key properties, and mathematical context.",Example: Minimize f(x)=x²+2x → df/dx=2x+2=0 → x=−1.
+264,Basic System,"Basic System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+265,Intermediate System,"Intermediate System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+266,Advanced System,"Advanced System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+267,Nonlinear System,"Nonlinear System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+268,Linear System,"Linear System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+269,Quadratic System,"Quadratic System: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+270,Cubic System,"Cubic System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+271,Stochastic System,"Stochastic System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+272,Deterministic System,"Deterministic System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+273,Discrete System,"Discrete System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+274,Continuous System,"Continuous System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+275,Differentiable System,"Differentiable System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+276,Integrable System,"Integrable System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+277,Convex System,"Convex System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+278,Concave System,"Concave System: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+279,Basic Algorithm,"Basic Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+280,Intermediate Algorithm,"Intermediate Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+281,Advanced Algorithm,"Advanced Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+282,Nonlinear Algorithm,"Nonlinear Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+283,Linear Algorithm,"Linear Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+284,Quadratic Algorithm,"Quadratic Algorithm: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+285,Cubic Algorithm,"Cubic Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+286,Stochastic Algorithm,"Stochastic Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+287,Deterministic Algorithm,"Deterministic Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+288,Discrete Algorithm,"Discrete Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+289,Continuous Algorithm,"Continuous Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+290,Differentiable Algorithm,"Differentiable Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+291,Integrable Algorithm,"Integrable Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+292,Convex Algorithm,"Convex Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+293,Concave Algorithm,"Concave Algorithm: concept explanation, key properties, and mathematical context.",Example: BFS explores nodes level-wise; for adjacency list traversal O(V+E).
+294,Basic Model,"Basic Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+295,Intermediate Model,"Intermediate Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+296,Advanced Model,"Advanced Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+297,Nonlinear Model,"Nonlinear Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+298,Linear Model,"Linear Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+299,Quadratic Model,"Quadratic Model: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+300,Cubic Model,"Cubic Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+301,Stochastic Model,"Stochastic Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+302,Deterministic Model,"Deterministic Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+303,Discrete Model,"Discrete Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+304,Continuous Model,"Continuous Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+305,Differentiable Model,"Differentiable Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+306,Integrable Model,"Integrable Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+307,Convex Model,"Convex Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+308,Concave Model,"Concave Model: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+309,Basic Space,"Basic Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+310,Intermediate Space,"Intermediate Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+311,Advanced Space,"Advanced Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+312,Nonlinear Space,"Nonlinear Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+313,Linear Space,"Linear Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+314,Quadratic Space,"Quadratic Space: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+315,Cubic Space,"Cubic Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+316,Stochastic Space,"Stochastic Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+317,Deterministic Space,"Deterministic Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+318,Discrete Space,"Discrete Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+319,Continuous Space,"Continuous Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+320,Differentiable Space,"Differentiable Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+321,Integrable Space,"Integrable Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+322,Convex Space,"Convex Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+323,Concave Space,"Concave Space: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+324,Basic Surface,"Basic Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+325,Intermediate Surface,"Intermediate Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+326,Advanced Surface,"Advanced Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+327,Nonlinear Surface,"Nonlinear Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+328,Linear Surface,"Linear Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+329,Quadratic Surface,"Quadratic Surface: concept explanation, key properties, and mathematical context.","Example: Solve x² - 5x + 6 = 0 → x=2,3."
+330,Cubic Surface,"Cubic Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+331,Stochastic Surface,"Stochastic Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+332,Deterministic Surface,"Deterministic Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+333,Discrete Surface,"Discrete Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+334,Continuous Surface,"Continuous Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+335,Differentiable Surface,"Differentiable Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+336,Integrable Surface,"Integrable Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+337,Convex Surface,"Convex Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
+338,Concave Surface,"Concave Surface: concept explanation, key properties, and mathematical context.",Example: include numeric or symbolic demonstration for the formula or theorem.
