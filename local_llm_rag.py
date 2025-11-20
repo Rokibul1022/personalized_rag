@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import random
 import os
 import sys
+from datetime import datetime
 
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -946,7 +947,7 @@ Answer:"""
     
     def chat_loop(self):
         print("\n DeepSeek-R1 Assistant is ready!")
-        print("Commands: 'quiz' for practice, 'finetune' to improve, 'profile' for info, 'new topic' to reset, 'quit' to exit\n")
+        print("Commands: 'quiz', 'stats', 'charts', 'difficulty', 'mistakes', 'collab', 'groups', 'exam', 'profile', 'new topic', 'quit'\n")
         
         while True:
             user_input = input(f" {self.current_user['name']}: ").strip()
@@ -972,6 +973,27 @@ Answer:"""
                 continue
             elif user_input.lower() == 'quiz':
                 self.generate_quiz_session()
+                continue
+            elif user_input.lower() == 'stats':
+                self.show_dashboard()
+                continue
+            elif user_input.lower() == 'charts':
+                self.show_visualizations()
+                continue
+            elif user_input.lower() == 'difficulty':
+                self.show_difficulty_report()
+                continue
+            elif user_input.lower() == 'mistakes':
+                self.show_mistake_analysis()
+                continue
+            elif user_input.lower() == 'collab':
+                self.show_collaborative_learning()
+                continue
+            elif user_input.lower() == 'groups':
+                self.show_study_groups()
+                continue
+            elif user_input.lower() == 'exam':
+                self.show_exam_prep()
                 continue
             elif user_input.lower() == 'finetune':
                 print(" Analyzing RAG memory and learning patterns...")
@@ -1398,6 +1420,22 @@ Make questions clear and fundamental."""
         self.rag_system.save_memory()
     
     def run_advanced_quiz(self, topic, difficulty, num_questions):
+        # Check if difficulty should be auto-adjusted
+        from adaptive_difficulty import AdaptiveDifficulty
+        from mistake_analyzer import MistakeAnalyzer
+        
+        profile_file = PROFILES_DIR / f"{self.current_user['name'].replace(' ', '_')}.json"
+        adaptive = AdaptiveDifficulty(self.rag_system.user_kb_file, profile_file)
+        mistake_analyzer = MistakeAnalyzer(self.rag_system.user_kb_file, profile_file)
+        
+        # Get recommended difficulty for this topic
+        recommended = adaptive.get_recommended_difficulty(topic)
+        if recommended != difficulty:
+            print(f"\n💡 Recommended difficulty for {topic}: {recommended.upper()}")
+            use_recommended = input(f"   Use recommended difficulty? (y/n): ").lower()
+            if use_recommended == 'y':
+                difficulty = recommended
+        
         print(f"\n Generating {difficulty.upper()} quiz on {topic.title()}...")
         questions = self.rag_system.generate_quiz(topic, difficulty, num_questions)
         
@@ -1407,6 +1445,7 @@ Make questions clear and fundamental."""
         
         score = 0
         total_questions = len(questions)
+        wrong_answers = []
         
         print(f"\n {topic.title()} Quiz - {difficulty.upper()} Level")
         print("=" * 50)
@@ -1427,6 +1466,15 @@ Make questions clear and fundamental."""
                     score += 1
                 else:
                     print(f" Incorrect. The correct answer is: {correct_answer}")
+                    # Record mistake
+                    mistake_analyzer.record_mistake(
+                        question=q['question'],
+                        user_answer=user_answer,
+                        correct_answer=correct_answer,
+                        topic=topic,
+                        difficulty=difficulty
+                    )
+                    wrong_answers.append(q['question'])
             else:
                 user_answer = input("👉 Your answer: ").strip()
                 if user_answer:
@@ -1466,6 +1514,357 @@ Make questions clear and fundamental."""
         
         # Rebuild retriever with new data
         self.rag_system.build_retriever()
+        
+        # Auto-adjust difficulty based on performance
+        adjustment_msg = adaptive.auto_adjust_after_quiz(topic, percentage)
+        if adjustment_msg:
+            print(adjustment_msg)
+            # Reload profile with new difficulty
+            self.current_user = self.load_profile(self.current_user['name'])
+        
+        # Show mistake analysis if there were errors
+        if wrong_answers:
+            print(f"\n🔍 MISTAKES RECORDED: {len(wrong_answers)}")
+            print("   Use 'mistakes' command to see detailed analysis")
+    
+    def show_dashboard(self):
+        """Display learning progress dashboard"""
+        from dashboard import LearningDashboard
+        
+        dashboard = LearningDashboard(self.rag_system.user_kb_file)
+        report = dashboard.display_dashboard()
+        
+        # Show recommendations
+        recommendations = dashboard.get_recommendations()
+        if recommendations:
+            print("\n💡 RECOMMENDATIONS:")
+            for rec in recommendations:
+                print(f"  {rec}")
+            print()
+    
+    def show_visualizations(self):
+        """Display visual charts and graphs"""
+        from visualizations import generate_all_visualizations
+        
+        generate_all_visualizations(self.rag_system.user_kb_file)
+    
+    def show_mistake_analysis(self):
+        """Display mistake pattern analysis"""
+        from mistake_analyzer import MistakeAnalyzer
+        
+        profile_file = PROFILES_DIR / f"{self.current_user['name'].replace(' ', '_')}.json"
+        analyzer = MistakeAnalyzer(self.rag_system.user_kb_file, profile_file)
+        
+        analyzer.display_mistake_report()
+        
+        # Offer targeted practice
+        weak_topics = analyzer.get_weak_topics()
+        if weak_topics:
+            practice = input(f"\n🎯 Take targeted practice quiz on '{weak_topics[0]['topic']}'? (y/n): ").lower()
+            if practice == 'y':
+                self.run_advanced_quiz(weak_topics[0]['topic'], 'easy', 5)
+    
+    def show_difficulty_report(self):
+        """Display difficulty adjustment report"""
+        from adaptive_difficulty import AdaptiveDifficulty
+        
+        profile_file = PROFILES_DIR / f"{self.current_user['name'].replace(' ', '_')}.json"
+        adaptive = AdaptiveDifficulty(self.rag_system.user_kb_file, profile_file)
+        
+        report = adaptive.get_difficulty_report()
+        topic_difficulties = adaptive.get_topic_specific_difficulty()
+        
+        print("\n" + "="*60)
+        print("🎯 ADAPTIVE DIFFICULTY REPORT")
+        print("="*60)
+        
+        print(f"\n📊 CURRENT STATUS:")
+        print(f"  Difficulty Level: {report['current_difficulty'].upper()}")
+        print(f"  Recent Performance: {report['recent_performance']}")
+        print(f"  Trend: {report['trend'].upper()}")
+        
+        print(f"\n💡 RECOMMENDATION:")
+        print(f"  {report['recommendation']}")
+        
+        if topic_difficulties:
+            print(f"\n📚 TOPIC-SPECIFIC DIFFICULTY:")
+            for topic, info in sorted(topic_difficulties.items(), key=lambda x: x[1]['avg_score'], reverse=True)[:5]:
+                topic_short = topic[:30] + '...' if len(topic) > 30 else topic
+                print(f"  • {topic_short:35} {info['recommended'].upper():8} (avg: {info['avg_score']:.0f}%)")
+        
+        if report.get('scores'):
+            print(f"\n📈 RECENT QUIZ SCORES:")
+            for score in report['scores'][-5:]:
+                print(f"  • {score['topic'][:30]:32} {score['percentage']:.0f}%")
+        
+        print("\n" + "="*60)
+        print("\n📝 HOW IT WORKS:")
+        print(f"  • Score ≥85% on 3 consecutive quizzes → Difficulty increases")
+        print(f"  • Score <50% on 3 consecutive quizzes → Difficulty decreases")
+        print(f"  • System auto-adjusts after each quiz")
+        print("="*60 + "\n")
+    
+    def show_collaborative_learning(self):
+        """Show all users and enable collaboration"""
+        try:
+            from collaborative_learning import CollaborativeLearning
+            
+            collab = CollaborativeLearning(str(PROFILES_DIR))
+            users = collab.display_all_users()
+            
+            if not users:
+                return
+            
+            print("\n🤝 COLLABORATION OPTIONS:")
+            print("  1. Find Study Partners")
+            print("  2. Create Study Group")
+            print("  3. View Recommendations")
+            print("  4. Share Knowledge")
+            print("  5. Back")
+            
+            choice = input("\n👉 Select option (1-5): ").strip()
+            
+            if choice == '1':
+                collab.recommend_collaborators(self.current_user['name'])
+            elif choice == '2':
+                self.create_study_group_interactive(collab)
+            elif choice == '3':
+                collab.recommend_collaborators(self.current_user['name'])
+            elif choice == '4':
+                self.share_knowledge_interactive(collab, users)
+        except Exception as e:
+            print(f"\n❌ Error in collaboration feature: {e}")
+            print("Please try again or contact support.")
+    
+    def create_study_group_interactive(self, collab):
+        """Interactive study group creation"""
+        topic = input("\n📚 Study group topic: ").strip()
+        if not topic:
+            print(" Topic required!")
+            return
+        
+        description = input("📝 Description (optional): ").strip()
+        
+        print("\n👥 Add members (enter usernames, comma-separated):")
+        members_input = input("   Members: ").strip()
+        members = [m.strip() for m in members_input.split(',') if m.strip()]
+        members.append(self.current_user['name'])  # Add creator
+        
+        group_id = collab.create_study_group(
+            creator=self.current_user['name'],
+            members=list(set(members)),  # Remove duplicates
+            topic=topic,
+            description=description
+        )
+        
+        print(f"\n✅ Study group #{group_id} created successfully!")
+        print(f"   Topic: {topic}")
+        print(f"   Members: {', '.join(members)}")
+    
+    def share_knowledge_interactive(self, collab, users):
+        """Interactive knowledge sharing"""
+        print("\n📤 SHARE KNOWLEDGE")
+        
+        # Select recipient
+        print("\nAvailable users:")
+        for i, user in enumerate(users, 1):
+            if user['username'] != self.current_user['name']:
+                name = user['profile'].get('name', user['username'])
+                print(f"  {i}. {name}")
+        
+        recipient = input("\n👉 Recipient username: ").strip()
+        if not recipient:
+            return
+        
+        topic = input("📚 Topic: ").strip()
+        content = input("💡 Knowledge/tip to share: ").strip()
+        
+        if topic and content:
+            collab.share_knowledge(
+                from_user=self.current_user['name'],
+                to_user=recipient,
+                topic=topic,
+                content=content
+            )
+            print(f"\n✅ Knowledge shared with {recipient}!")
+    
+    def show_study_groups(self):
+        """Display study groups"""
+        from collaborative_learning import CollaborativeLearning
+        
+        collab = CollaborativeLearning(str(PROFILES_DIR))
+        collab.display_study_groups(self.current_user['name'])
+        
+        # Check for shared knowledge
+        shared = collab.get_shared_knowledge(self.current_user['name'])
+        if shared:
+            print("\n📬 KNOWLEDGE SHARED WITH YOU:")
+            for item in shared[-5:]:  # Show last 5
+                print(f"\n  From: {item['from']}")
+                print(f"  Topic: {item['topic']}")
+                print(f"  Content: {item['content']}")
+                print(f"  Date: {item['timestamp'][:10]}")
+    
+    def show_exam_prep(self):
+        """Show exam preparation menu"""
+        from exam_prep import ExamPreparation
+        
+        profile_file = PROFILES_DIR / f"{self.current_user['name'].replace(' ', '_')}.json"
+        exam_prep = ExamPreparation(self.rag_system.user_kb_file, profile_file, self.get_llm_response)
+        
+        exam_prep.display_all_exams()
+        
+        print("\n🎯 EXAM PREPARATION OPTIONS:")
+        print("  1. Add New Exam")
+        print("  2. Generate Study Plan")
+        print("  3. View Study Plan")
+        print("  4. Mark Progress")
+        print("  5. Back")
+        
+        choice = input("\n👉 Select option (1-5): ").strip()
+        
+        if choice == '1':
+            self.add_exam_interactive(exam_prep)
+        elif choice == '2':
+            self.generate_plan_interactive(exam_prep)
+        elif choice == '3':
+            self.view_plan_interactive(exam_prep)
+        elif choice == '4':
+            self.mark_progress_interactive(exam_prep)
+    
+    def get_llm_response(self, prompt):
+        """Wrapper for LLM calls"""
+        if self.rag_system.llm == "ollama":
+            return self.rag_system.call_ollama(prompt)
+        elif isinstance(self.rag_system.llm, dict):
+            return self.rag_system.call_transformers(prompt)
+        return "LLM not available"
+    
+    def add_exam_interactive(self, exam_prep):
+        """Interactive exam addition"""
+        print("\n📝 ADD NEW EXAM")
+        
+        exam_name = input("\n📚 Exam name (e.g., SAT, GRE, Midterm): ").strip()
+        if not exam_name:
+            print("❌ Exam name required!")
+            return
+        
+        print("\n📅 Exam date (YYYY-MM-DD):")
+        date_str = input("   Date: ").strip()
+        try:
+            # Validate date format
+            datetime.strptime(date_str, '%Y-%m-%d')
+        except:
+            print("❌ Invalid date format! Use YYYY-MM-DD")
+            return
+        
+        print("\n📚 Topics to cover (comma-separated):")
+        topics_str = input("   Topics: ").strip()
+        topics = [t.strip() for t in topics_str.split(',') if t.strip()]
+        
+        if not topics:
+            print("❌ At least one topic required!")
+            return
+        
+        print("\n🎯 Difficulty (easy/medium/hard):")
+        difficulty = input("   Difficulty: ").strip().lower()
+        if difficulty not in ['easy', 'medium', 'hard']:
+            difficulty = 'medium'
+        
+        exam_id = exam_prep.add_exam(exam_name, date_str, topics, difficulty)
+        
+        print(f"\n✅ Exam #{exam_id} added successfully!")
+        print(f"   Name: {exam_name}")
+        print(f"   Date: {date_str}")
+        print(f"   Topics: {', '.join(topics)}")
+        
+        # Ask if they want to generate plan now
+        generate = input("\n💡 Generate study plan now? (y/n): ").lower()
+        if generate == 'y':
+            print("\n🤖 Generating personalized study plan using DeepSeek-R1...")
+            plan = exam_prep.generate_study_plan(exam_id, self.current_user)
+            if plan:
+                print("\n✅ Study plan generated!")
+                print("\nType 'exam' and select option 3 to view your plan.")
+    
+    def generate_plan_interactive(self, exam_prep):
+        """Interactive plan generation"""
+        exams = exam_prep.get_upcoming_exams()
+        
+        if not exams:
+            print("\n❌ No exams registered. Add an exam first!")
+            return
+        
+        print("\n📚 Select exam to generate plan for:")
+        for exam in exams:
+            status = "✅ Has Plan" if exam.get('study_plan') else "⏳ No Plan"
+            print(f"  {exam['id']}. {exam['name']} - {exam['days_until']} days {status}")
+        
+        exam_id = input("\n👉 Exam ID: ").strip()
+        try:
+            exam_id = int(exam_id)
+        except:
+            print("❌ Invalid exam ID!")
+            return
+        
+        print("\n🤖 Generating personalized study plan using DeepSeek-R1...")
+        print("This may take a moment...\n")
+        
+        plan = exam_prep.generate_study_plan(exam_id, self.current_user)
+        
+        if plan:
+            print("✅ Study plan generated successfully!")
+            print("\n" + "="*80)
+            print(plan[:500] + "..." if len(plan) > 500 else plan)
+            print("\n" + "="*80)
+            print("\nType 'exam' and select option 3 to view full plan anytime.")
+        else:
+            print("❌ Failed to generate plan. Check exam ID.")
+    
+    def view_plan_interactive(self, exam_prep):
+        """Interactive plan viewing"""
+        exams = exam_prep.get_upcoming_exams()
+        
+        if not exams:
+            print("\n❌ No exams registered.")
+            return
+        
+        print("\n📚 Select exam to view plan:")
+        for exam in exams:
+            status = "✅ Has Plan" if exam.get('study_plan') else "⏳ No Plan"
+            print(f"  {exam['id']}. {exam['name']} {status}")
+        
+        exam_id = input("\n👉 Exam ID: ").strip()
+        try:
+            exam_id = int(exam_id)
+            exam_prep.display_exam_plan(exam_id)
+        except:
+            print("❌ Invalid exam ID!")
+    
+    def mark_progress_interactive(self, exam_prep):
+        """Interactive progress marking"""
+        exams = exam_prep.get_upcoming_exams()
+        
+        if not exams:
+            print("\n❌ No exams registered.")
+            return
+        
+        print("\n📚 Select exam:")
+        for exam in exams:
+            print(f"  {exam['id']}. {exam['name']}")
+        
+        exam_id = input("\n👉 Exam ID: ").strip()
+        day = input("📅 Day completed (e.g., Day 1): ").strip()
+        notes = input("📝 Notes (optional): ").strip()
+        
+        try:
+            exam_id = int(exam_id)
+            if exam_prep.mark_progress(exam_id, day, notes):
+                print(f"\n✅ Progress marked for {day}!")
+            else:
+                print("❌ Failed to mark progress.")
+        except:
+            print("❌ Invalid input!")
     
     def show_rag_intelligence(self):
         memory = self.rag_system.memory
