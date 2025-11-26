@@ -20,14 +20,22 @@ PROFILES_DIR.mkdir(exist_ok=True)
 MODELS_DIR.mkdir(exist_ok=True)
 
 class LocalLLMRAGSystem:
-    def __init__(self, model_path=None, user_name=None):
+    def __init__(self, model_path=None, user_name=None, use_external_sources=True):
         self.user_name = user_name
         self.user_kb_file = PROFILES_DIR / f"{user_name}_knowledge_base.csv" if user_name else None
+        self.use_external_sources = use_external_sources
         
         self.kb = self.load_knowledge_base()
         self.user_kb = self.load_user_knowledge_base()
         self.retriever = self.build_retriever()
         self.llm = self.load_local_llm(model_path)
+        
+        # External sources (optional)
+        if use_external_sources:
+            from external_sources import ExternalSources
+            self.external = ExternalSources()
+        else:
+            self.external = None
         
         # Intelligent RAG components
         self.memory = self.load_memory()
@@ -148,6 +156,7 @@ class LocalLLMRAGSystem:
     def save_to_user_kb(self, query, topic, response='', quiz_score=None, level=None, entry_type='query'):
         """Save entry to user's knowledge base"""
         if not self.user_kb_file:
+            print("⚠️ No user KB file configured!")
             return
         
         new_entry = pd.DataFrame([{
@@ -161,7 +170,19 @@ class LocalLLMRAGSystem:
         }])
         
         self.user_kb = pd.concat([self.user_kb, new_entry], ignore_index=True)
-        self.user_kb.to_csv(self.user_kb_file, index=False)
+        
+        try:
+            # Force write with explicit mode
+            self.user_kb.to_csv(self.user_kb_file, index=False, mode='w')
+            # Verify file was written
+            if self.user_kb_file.exists():
+                print(f"✅ Saved to {self.user_kb_file}: query='{query[:30]}...', topic='{topic}'")
+            else:
+                print(f"❌ File not found after save: {self.user_kb_file}")
+        except Exception as e:
+            print(f"❌ Error saving to KB: {e}")
+            import traceback
+            traceback.print_exc()
     
     def is_topic_in_user_kb(self, topic):
         """Check if topic exists in user's knowledge base"""
@@ -473,6 +494,9 @@ Keep response under 300 words."""
             response += "• Draw diagrams to visualize this concept\n"
         else:
             response += "• Practice with examples to reinforce understanding\n"
+        
+        # External resources will be added by chat_loop AFTER saving to KB
+        # Don't add them here to avoid saving external links to KB
         
         return response, True  # Return flag indicating new topic
     
@@ -947,7 +971,7 @@ Answer:"""
     
     def chat_loop(self):
         print("\n DeepSeek-R1 Assistant is ready!")
-        print("Commands: 'quiz', 'stats', 'charts', 'difficulty', 'mistakes', 'collab', 'groups', 'exam', 'profile', 'new topic', 'quit'\n")
+        print("Commands: 'quiz', 'stats', 'charts', 'difficulty', 'mistakes', 'collab', 'groups', 'exam', 'external', 'profile', 'new topic', 'quit'\n")
         
         while True:
             user_input = input(f" {self.current_user['name']}: ").strip()
@@ -994,6 +1018,9 @@ Answer:"""
                 continue
             elif user_input.lower() == 'exam':
                 self.show_exam_prep()
+                continue
+            elif user_input.lower() == 'external':
+                self.toggle_external_sources()
                 continue
             elif user_input.lower() == 'finetune':
                 print(" Analyzing RAG memory and learning patterns...")
@@ -1107,15 +1134,43 @@ Answer:"""
                     else:
                         # No relevant KB context, use LLM directly
                         print("🤖 No relevant KB content found. Generating answer using DeepSeek-R1...")
-                        response, is_new_topic = self.rag_system.generate_llm_response(user_input, self.current_user)
+                        llm_result = self.rag_system.generate_llm_response(user_input, self.current_user)
+                        
+                        # Handle tuple return (response, is_new_topic)
+                        if isinstance(llm_result, tuple):
+                            response, is_new_topic = llm_result
+                        else:
+                            response = llm_result
+                            is_new_topic = False
                     
-                    # Save query to user KB
+                    # Check if topic is NEW before saving (for quiz prompt later)
+                    is_new_to_user = not self.rag_system.is_topic_in_user_kb(topic_name)
+                    
+                    # Save query to user KB BEFORE adding external sources
+                    # Extract clean text from response
+                    if isinstance(response, tuple):
+                        response_text = response[0] if response[0] else str(response)
+                    else:
+                        response_text = response if isinstance(response, str) else str(response)
+                    
+                    # Remove external source markers and clean
+                    clean_response = response_text.split('📄 RECOMMENDED PDFs:')[0].split('🎥 RECOMMENDED YOUTUBE')[0]
+                    clean_response = clean_response.replace('\n', ' ').strip()[:500]
+                    
                     self.rag_system.save_to_user_kb(
                         query=user_input,
                         topic=topic_name,
-                        response=response,
+                        response=clean_response,
                         entry_type='query'
                     )
+                    print(f"💾 Saved to knowledge base: {topic_name}")
+                    
+                    # NOW add external resources to response (after saving)
+                    if self.rag_system.use_external_sources and self.rag_system.external:
+                        print("🔍 Searching external sources (PDFs & YouTube)...")
+                        external_resources = self.rag_system.external.get_external_resources(user_input)
+                        if external_resources:
+                            response += "\n" + self.rag_system.external.format_external_resources(external_resources)
                     
                     # Update conversation context with the ACTUAL topic from this query
                     self.conversation_context['current_topic'] = topic_name
@@ -1127,11 +1182,12 @@ Answer:"""
             print(response)
             print("="*60 + "\n")
             
-            # If new topic, offer assessment quiz
-            if is_new_topic:
-                take_quiz = input(" I notice this is a new topic for you. Would you like to take a quick 3-question quiz to assess your understanding? (yes/no): ").lower()
-                if take_quiz == 'yes':
-                    self.run_assessment_quiz(user_input)
+            # Offer quiz if this was a new topic (checked before saving)
+            if 'is_new_to_user' in locals() and is_new_to_user and not is_quiz_request:
+                query_topic = self.extract_topic_from_query(user_input)
+                take_quiz = input("\n🎯 This is a new topic! Take a quick quiz to test your understanding? (yes/no): ").lower()
+                if take_quiz in ['yes', 'y']:
+                    self.run_assessment_quiz(query_topic)
             
             # Get feedback for RAG learning
             feedback = input(" Was this response helpful? (good/bad/skip): ").lower()
@@ -1391,6 +1447,17 @@ Make questions clear and fundamental."""
                     score += 1
                 else:
                     print(f" Incorrect. Correct: {correct_answer}")
+                    # Record mistake for assessment
+                    from mistake_analyzer import MistakeAnalyzer
+                    profile_file = PROFILES_DIR / f"{self.current_user['name'].replace(' ', '_')}.json"
+                    mistake_analyzer = MistakeAnalyzer(self.rag_system.user_kb_file, profile_file)
+                    mistake_analyzer.record_mistake(
+                        question=q['question'],
+                        user_answer=user_answer,
+                        correct_answer=correct_answer,
+                        topic=topic,
+                        difficulty='easy'
+                    )
         
         percentage = (score / total_questions) * 100
         
@@ -1865,6 +1932,40 @@ Make questions clear and fundamental."""
                 print("❌ Failed to mark progress.")
         except:
             print("❌ Invalid input!")
+    
+    def toggle_external_sources(self):
+        """Toggle external sources (PDFs & YouTube)"""
+        current_status = "ON" if self.rag_system.use_external_sources else "OFF"
+        
+        print("\n" + "="*60)
+        print("🔍 EXTERNAL SOURCES (PDFs & YouTube)")
+        print("="*60)
+        print(f"\nCurrent Status: {current_status}")
+        print("\nWhen enabled, the system will:")
+        print("  • Extract keywords from your query")
+        print("  • Search for relevant PDF documents")
+        print("  • Find YouTube video tutorials")
+        print("  • Include links in responses")
+        print("\nNote: Requires API keys for full functionality")
+        print("      (Mock results shown without API keys)")
+        
+        toggle = input(f"\n👉 Turn external sources {'OFF' if self.rag_system.use_external_sources else 'ON'}? (y/n): ").lower()
+        
+        if toggle == 'y':
+            self.rag_system.use_external_sources = not self.rag_system.use_external_sources
+            
+            if self.rag_system.use_external_sources:
+                # Initialize external sources
+                from external_sources import ExternalSources
+                self.rag_system.external = ExternalSources()
+                print("\n✅ External sources ENABLED")
+                print("   Your responses will now include PDF and YouTube links!")
+            else:
+                self.rag_system.external = None
+                print("\n✅ External sources DISABLED")
+                print("   Responses will use internal knowledge base only.")
+        
+        print("\n" + "="*60)
     
     def show_rag_intelligence(self):
         memory = self.rag_system.memory
