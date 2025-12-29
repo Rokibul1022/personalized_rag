@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - StudyRAG</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 StudyRAG</h2>
+                <p id="username-display"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/chat" class="nav-item">
+                    <span class="icon">💬</span> Chat
+                </a>
+                <a href="/practice" class="nav-item">
+                    <span class="icon">✏️</span> Practice
+                </a>
+                <a href="/quiz" class="nav-item active">
+                    <span class="icon">📝</span> Quiz
+                </a>
+                <a href="/exam" class="nav-item">
+                    <span class="icon">📚</span> Exam Preparation
+                </a>
+                <a href="/stats" class="nav-item">
+                    <span class="icon">📊</span> Stats
+                </a>
+                <a href="/profile" class="nav-item">
+                    <span class="icon">👤</span> Profile
+                </a>
+                <a href="/collab" class="nav-item">
+                    <span class="icon">🤝</span> Collaboration
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="darkModeToggle" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;">
+                    <span id="themeIcon">🌙</span> Dark Mode
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h2>📝 Take a Quiz</h2>
+                    <p>Test your knowledge on any topic</p>
+                </div>
+                
+                <!-- Quiz History -->
+                <div id="quizHistory" class="quiz-history"></div>
+                
+                <!-- Quiz Setup -->
+                <div id="quizSetup" class="quiz-setup">
+                    <div class="form-group">
+                        <label for="quizTopic">Main Topic</label>
+                        <select id="quizTopic">
+                            <option value="">Select a topic...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="subtopicContainer" class="form-group" style="display:none;">
+                        <label for="subtopicSelect">Subtopic</label>
+                        <select id="subtopicSelect">
+                            <option value="">Select subtopic...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" id="customTopic" placeholder="Or enter custom topic">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quizDifficulty">Difficulty</label>
+                            <select id="quizDifficulty">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="quizQuestions">Questions</label>
+                            <select id="quizQuestions">
+                                <option value="3">3 Questions</option>
+                                <option value="5" selected>5 Questions</option>
+                                <option value="10">10 Questions</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button id="generateQuizBtn" class="btn btn-primary btn-block">Generate Quiz</button>
+                </div>
+                
+                <!-- Quiz Questions -->
+                <div id="quizQuestions" class="quiz-questions" style="display:none;">
+                    <h3 style="margin-bottom: 1.5rem;">📝 Answer the Questions</h3>
+                    <div id="questionsContainer" style="display: block !important; visibility: visible !important;"></div>
+                    <button id="submitQuizBtn" class="btn btn-primary btn-block" style="margin-top: 2rem;">Submit Quiz</button>
+                </div>
+                
+                <!-- Quiz Results -->
+                <div id="quizResults" class="quiz-results" style="display:none;">
+                    <div class="results-header">
+                        <h3>Quiz Results</h3>
+                        <div class="score-display">
+                            <span id="scoreText"></span>
+                            <span id="percentageText"></span>
+                        </div>
+                    </div>
+                    <div id="resultsDetails"></div>
+                    <button id="newQuizBtn" class="btn btn-primary">Take Another Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+    .quiz-history {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .quiz-history h3 {
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+    .quiz-history-card {
+        background: white;
+        padding: 1.25rem;
+        margin-bottom: 0.75rem;
+        border-radius: 8px;
+        border-left: 4px solid #6366f1;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .quiz-history-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        border-left-color: #4f46e5;
+        background: #fafbff;
+    }
+    .quiz-history-card[style*="not-allowed"] {
+        cursor: not-allowed !important;
+        opacity: 0.6;
+    }
+    .quiz-history-card[style*="not-allowed"]:hover {
+        transform: none;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .quiz-history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    .quiz-history-header strong {
+        color: #1e293b;
+        font-size: 1.05rem;
+    }
+    .quiz-score {
+        color: #6366f1;
+        font-weight: bold;
+        font-size: 1.1rem;
+        padding: 0.25rem 0.75rem;
+        background: #eef2ff;
+        border-radius: 6px;
+    }
+    .quiz-history-details {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+    .quiz-history-details span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    </style>
+    
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/quiz-fix.js"></script>
+    <script src="/static/js/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Preparation - StudyRAG</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 StudyRAG</h2>
+                <p id="username-display"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/chat" class="nav-item">
+                    <span class="icon">💬</span> Chat
+                </a>
+                <a href="/practice" class="nav-item">
+                    <span class="icon">✏️</span> Practice
+                </a>
+                <a href="/quiz" class="nav-item">
+                    <span class="icon">📝</span> Quiz
+                </a>
+                <a href="/exam" class="nav-item active">
+                    <span class="icon">📚</span> Exam Preparation
+                </a>
+                <a href="/stats" class="nav-item">
+                    <span class="icon">📊</span> Stats
+                </a>
+                <a href="/profile" class="nav-item">
+                    <span class="icon">👤</span> Profile
+                </a>
+                <a href="/collab" class="nav-item">
+                    <span class="icon">🤝</span> Collaboration
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="darkModeToggle" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;">
+                    <span id="themeIcon">🌙</span> Dark Mode
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="exam-container">
+                <div class="exam-header">
+                    <h2>📚 Exam Preparationaration</h2>
+                    <p>Create personalized study plans for your exams</p>
+                </div>
+                
+                <!-- Add New Exam Form -->
+                <div id="addExamForm" class="exam-form">
+                    <h3>➕ Register New Exam</h3>
+                    <div class="form-group">
+                        <label for="examName">Exam Name</label>
+                        <input type="text" id="examName" placeholder="e.g., Biology Midterm, Physics Final" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examDate">Exam Date</label>
+                        <input type="date" id="examDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examTopics">Topics (comma-separated)</label>
+                        <textarea id="examTopics" placeholder="e.g., Cell Biology, Genetics, Evolution" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examDifficulty">Difficulty Level</label>
+                        <select id="examDifficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <button id="addExamBtn" class="btn btn-primary btn-block">Register Exam</button>
+                </div>
+                
+                <!-- Upcoming Exams List -->
+                <div id="examsList" class="exams-list">
+                    <h3>📅 Your Upcoming Exams</h3>
+                    <div id="examsContainer" class="exams-container">
+                        <p class="loading">Loading exams...</p>
+                    </div>
+                </div>
+                
+                <!-- Study Plan Display -->
+                <div id="studyPlanView" class="study-plan-view" style="display:none;">
+                    <div class="plan-header">
+                        <h3 id="planExamName">Study Plan</h3>
+                        <button id="backToListBtn" class="btn btn-secondary">← Back to List</button>
+                    </div>
+                    
+                    <div class="plan-info">
+                        <div class="info-item">
+                            <span class="label">📅 Exam Date:</span>
+                            <span id="planExamDate" class="value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">⏰ Days Until Exam:</span>
+                            <span id="planDaysUntil" class="value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">📖 Topics:</span>
+                            <span id="planTopics" class="value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">🎯 Difficulty:</span>
+                            <span id="planDifficulty" class="value">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-buttons">
+                        <button id="generatePlanBtn" class="btn btn-primary">Generate Study Plan</button>
+                        <button id="downloadRoadmapBtn" class="btn btn-info">📥 Download Roadmap</button>
+                        <button id="markProgressBtn" class="btn btn-success">Mark Today's Progress</button>
+                        <button id="deleteExamBtn" class="btn btn-danger">Delete Exam</button>
+                    </div>
+                    
+                    <div id="studyPlanContent" class="study-plan-content" style="display:none;">
+                        <h4>📋 Your Personalized Study Plan</h4>
+                        <div id="planText" class="plan-text"></div>
+                    </div>
+                    
+                    <div id="planLoadingMsg" class="loading" style="display:none;">
+                        🔄 Generating your personalized study plan...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/exam.js"></script>
+</body>
+</html>

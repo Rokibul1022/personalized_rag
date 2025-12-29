@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - StudyRAG</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 StudyRAG</h2>
+                <p id="username-display"></p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/chat" class="nav-item"><span class="icon">💬</span> Chat</a>
+                <a href="/practice" class="nav-item"><span class="icon">✏️</span> Practice</a>
+                <a href="/quiz" class="nav-item"><span class="icon">📝</span> Quiz</a>
+                <a href="/exam" class="nav-item"><span class="icon">📚</span> Exam Prep</a>
+                <a href="/stats" class="nav-item active"><span class="icon">📊</span> Dashboard</a>
+                <a href="/profile" class="nav-item"><span class="icon">👤</span> Profile</a>
+                <a href="/collab" class="nav-item"><span class="icon">🤝</span> Collab</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="darkModeToggle" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;">
+                    <span id="themeIcon">🌙</span> Dark Mode
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="dash-header">
+                <h1>📊 Dashboard</h1>
+                <button id="refreshBtn" class="btn-refresh">🔄</button>
+            </div>
+            
+            <div class="dash-grid">
+                <div class="dash-card stat-card" onclick="window.location.href='/chat'">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2)">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalQueries">0</div>
+                        <div class="stat-label">Total Queries</div>
+                    </div>
+                </div>
+                
+                <div class="dash-card stat-card" onclick="showTopicsModal()">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c)">🎯</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="topicsExplored">0</div>
+                        <div class="stat-label">Topics Explored</div>
+                    </div>
+                </div>
+                
+                <div class="dash-card stat-card" onclick="window.location.href='/quiz'">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe)">📝</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="quizzesTaken">0</div>
+                        <div class="stat-label">Quizzes Taken</div>
+                    </div>
+                </div>
+                
+                <div class="dash-card stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7)">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="avgScore">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                </div>
+                
+                <div class="dash-card chart-card clickable" onclick="window.location.href='/quiz'">
+                    <h3>📈 Performance <span class="arrow">→</span></h3>
+                    <div id="progressChart"></div>
+                </div>
+                
+                <div class="dash-card activity-card clickable" onclick="window.location.href='/chat'">
+                    <h3>📋 Recent Activity <span class="arrow">→</span></h3>
+                    <div id="recentActivity"></div>
+                </div>
+                
+                <div class="dash-card patterns-card" onclick="showPatternsModal()">
+                    <h3>🧠 Learning Patterns <span class="arrow">→</span></h3>
+                    <div id="patternsPreview"></div>
+                </div>
+                
+                <div class="dash-card schedule-card" onclick="showScheduleModal()">
+                    <h3>📆 Study Schedule <span class="arrow">→</span></h3>
+                    <div id="schedulePreview"></div>
+                </div>
+                
+                <div class="dash-card gaps-card" onclick="showGapsModal()">
+                    <h3>⚠️ Knowledge Gaps <span class="arrow">→</span></h3>
+                    <div id="gapsPreview"></div>
+                </div>
+                
+                <div class="dash-card recs-card">
+                    <h3>💡 Recommendations</h3>
+                    <div id="recommendations"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="patternsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🧠 Learning Patterns</h2>
+                <button class="modal-close" onclick="closeModal('patternsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="pattern-details">
+                    <div class="detail-item">
+                        <strong>⏰ Peak Learning Hours</strong>
+                        <div id="peakHours"></div>
+                    </div>
+                    <div class="detail-item">
+                        <strong>📅 Most Active Days</strong>
+                        <div id="activeDays"></div>
+                    </div>
+                    <div class="detail-item">
+                        <strong>⚡ Learning Velocity</strong>
+                        <div id="velocity"></div>
+                    </div>
+                    <div class="detail-item">
+                        <strong>🎯 Consistency Score</strong>
+                        <div id="consistency"></div>
+                    </div>
+                    <div class="detail-item">
+                        <strong>🔮 Next Predicted Session</strong>
+                        <div id="nextSession"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📆 Personalized Study Schedule</h2>
+                <button class="modal-close" onclick="closeModal('scheduleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="scheduleDetails" class="schedule-details"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="gapsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎓 Knowledge Gap Analysis</h2>
+                <button class="modal-close" onclick="closeModal('gapsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="gaps-details">
+                    <div class="detail-section">
+                        <h3>⚠️ Weak Areas</h3>
+                        <div id="weakAreas"></div>
+                    </div>
+                    <div class="detail-section">
+                        <h3>🔁 Repeated Questions</h3>
+                        <div id="repeatedQuestions"></div>
+                    </div>
+                    <div class="detail-section">
+                        <h3>🌟 Unexplored Topics</h3>
+                        <div id="unexploredTopics"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="topicsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔥 All Topics</h2>
+                <button class="modal-close" onclick="closeModal('topicsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="allTopics" class="all-topics"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/stats.js"></script>
+</body>
+</html>

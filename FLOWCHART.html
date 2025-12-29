@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Flowchart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            padding: 10px;
+            margin: 0;
+            zoom: 0.7;
+        }
+        
+        h1 {
+            text-align: center;
+            color: black;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .box {
+            border: 2px solid black;
+            padding: 8px 15px;
+            background-color: #e8f4f8;
+            text-align: center;
+            min-width: 120px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .decision {
+            border: 2px solid black;
+            padding: 8px 15px;
+            background-color: #fff4e6;
+            text-align: center;
+            min-width: 120px;
+            transform: rotate(45deg);
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .decision-text {
+            transform: rotate(-45deg);
+            display: block;
+        }
+        
+        .arrow {
+            font-size: 16px;
+            color: black;
+        }
+        
+        .split {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .label {
+            font-weight: bold;
+            color: #0066cc;
+            font-size: 10px;
+        }
+        
+        .process {
+            background-color: #d4edda;
+        }
+        
+        .start-end {
+            background-color: #f8d7da;
+            border-radius: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SYSTEM FLOW DIAGRAM</h1>
+    
+    <div class="flowchart">
+        <div class="box start-end">START</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">User Login<br>Load Profile</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">User Query<br>(Text/Voice/Image)</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">Extract Topic<br>Check if New</div>
+        <div class="arrow">↓</div>
+        
+        <div class="split">
+            <div class="branch">
+                <div class="label">NEW TOPIC</div>
+                <div class="arrow">↓</div>
+                <div class="box">Pure LLM Generation<br>(Profile-aware)</div>
+            </div>
+            
+            <div class="branch">
+                <div class="label">KNOWN TOPIC</div>
+                <div class="arrow">↓</div>
+                <div class="box">TF-IDF Retrieval<br>from User KB</div>
+                <div class="arrow">↓</div>
+                <div class="box">Relevance Check<br>(>0.3?)</div>
+                <div class="arrow">↓</div>
+                
+                <div class="split">
+                    <div class="branch">
+                        <div class="label">RELEVANT</div>
+                        <div class="arrow">↓</div>
+                        <div class="box">Context-based<br>LLM Generation</div>
+                    </div>
+                    
+                    <div class="branch">
+                        <div class="label">NOT RELEVANT</div>
+                        <div class="arrow">↓</div>
+                        <div class="box">Web Search<br>(Wikipedia/DuckDuckGo)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="arrow">↓</div>
+        <div class="box process">DeepSeek-R1<br>Generate Personalized Response</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">Return to User<br>Display Result</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">Save to User KB<br>(Query, Topic, Response)</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">Rebuild TF-IDF Index</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box">Check Counter<br>Query Count</div>
+        <div class="arrow">↓</div>
+        
+        <div class="box" style="background-color: #fff4e6;">Count >= 20?</div>
+        <div class="arrow">↓</div>
+        
+        <div class="split">
+            <div class="branch">
+                <div class="label">YES</div>
+                <div class="arrow">↓</div>
+                <div class="box process">Trigger LoRA Fine-tuning<br>(Background)</div>
+                <div class="arrow">↓</div>
+                <div class="box">Prepare Dataset<br>(All queries)</div>
+                <div class="arrow">↓</div>
+                <div class="box">Load Qwen 3B<br>+ LoRA Adapters</div>
+                <div class="arrow">↓</div>
+                <div class="box">Train 3 Epochs<br>(5-10 min)</div>
+                <div class="arrow">↓</div>
+                <div class="box">Save Adapters<br>Update Counter</div>
+                <div class="arrow">↓</div>
+                <div class="box start-end">Model Improved<br>Ready for Next 20 Queries</div>
+            </div>
+            
+            <div class="branch">
+                <div class="label">NO</div>
+                <div class="arrow">↓</div>
+                <div class="box">Continue Learning</div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background-color: #f0f0f0; border-left: 4px solid #0066cc;">
+        <h3>Key Features:</h3>
+        <ul>
+            <li>Continuous learning loop</li>
+            <li>Smart retrieval with fallback</li>
+            <li>Automatic model improvement</li>
+            <li>Knowledge persistence</li>
+        </ul>
+    </div>
+</body>
+</html>

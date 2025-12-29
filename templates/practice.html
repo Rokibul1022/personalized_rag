@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice - StudyRAG</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 StudyRAG</h2>
+                <p id="username-display"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/chat" class="nav-item">
+                    <span class="icon">💬</span> Chat
+                </a>
+                <a href="/practice" class="nav-item active">
+                    <span class="icon">✏️</span> Practice
+                </a>
+                <a href="/quiz" class="nav-item">
+                    <span class="icon">📝</span> Quiz
+                </a>
+                <a href="/exam" class="nav-item">
+                    <span class="icon">📚</span> Exam Preparation
+                </a>
+                <a href="/stats" class="nav-item">
+                    <span class="icon">📊</span> Stats
+                </a>
+                <a href="/profile" class="nav-item">
+                    <span class="icon">👤</span> Profile
+                </a>
+                <a href="/collab" class="nav-item">
+                    <span class="icon">🤝</span> Collaboration
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="darkModeToggle" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;">
+                    <span id="themeIcon">🌙</span> Dark Mode
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+            </div>
+        </div>
+        
+        <div class="main-content" style="height: 100vh; overflow-y: auto;">
+            <div class="content-header">
+                <h1>✏️ Practice Problems</h1>
+                <p>Generate unlimited AI-powered practice problems</p>
+            </div>
+            
+            <div class="card">
+                <h2>Generate Problems</h2>
+                <form id="practiceForm">
+                    <div class="form-group">
+                        <label>Topic</label>
+                        <input type="text" id="topicInput" placeholder="e.g., Algebra, Python loops" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Difficulty</label>
+                        <select id="difficultySelect">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Number of Problems</label>
+                        <select id="countSelect">
+                            <option value="3" selected>3</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Generate Problems</button>
+                </form>
+            </div>
+            
+            <div id="problemsContainer"></div>
+            
+            <div class="card" style="margin-top: 2rem;">
+                <h2>Practice History</h2>
+                <div id="historyContainer">Loading...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/practice.js"></script>
+</body>
+</html>

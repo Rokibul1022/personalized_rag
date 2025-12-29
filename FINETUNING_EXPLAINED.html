@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Fine-Tuning Works with LoRA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin: 0 0 20px 0;
+            font-size: 32px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        .box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .box h3 {
+            margin: 0 0 10px 0;
+            color: #764ba2;
+            font-size: 16px;
+        }
+        .box p, .box ul {
+            margin: 5px 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .box ul {
+            padding-left: 20px;
+        }
+        .flow {
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .bad { background: #fee2e2; border-left-color: #ef4444; }
+        .good { background: #d1fae5; border-left-color: #22c55e; }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+        .stat {
+            text-align: center;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .stat-num {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>How Fine-Tuning Works with LoRA</h1>
+        
+        <div class="grid">
+            <div class="box">
+                <h3>What is Fine-Tuning?</h3>
+                <p>Takes pre-trained Qwen 3B model and teaches it user-specific patterns without starting from scratch. Like a doctor specializing in pediatrics - doesn't forget medicine, just gets better at treating kids.</p>
+                <p><strong>Triggers:</strong> Every 20 queries automatically</p>
+            </div>
+            
+            <div class="box">
+                <h3>The Process Flow</h3>
+                <div class="flow">
+                    20 Queries → Save to KB<br>
+                    ↓<br>
+                    Load Qwen 3B + LoRA<br>
+                    ↓<br>
+                    Train 3 Epochs (5-10 min)<br>
+                    ↓<br>
+                    Save Adapters (50MB)<br>
+                    ↓<br>
+                    Model Improved!
+                </div>
+            </div>
+            
+            <div class="box">
+                <h3>What Model Learns</h3>
+                <ul>
+                    <li><strong>Vocabulary:</strong> Age 10 = fun examples, Age 20 = technical depth</li>
+                    <li><strong>Topics:</strong> Math, physics, CS patterns</li>
+                    <li><strong>Style:</strong> Question format preferences</li>
+                    <li><strong>Format:</strong> Response length & detail level</li>
+                </ul>
+            </div>
+            
+            <div class="box" style="grid-column: span 2;">
+                <h3>Traditional vs LoRA Fine-Tuning</h3>
+                <div class="compare">
+                    <div class="box bad">
+                        <strong>Traditional</strong>
+                        <p>Updates: 3 billion params<br>
+                        VRAM: 12GB+<br>
+                        Time: Hours<br>
+                        Risk: Forgets knowledge</p>
+                    </div>
+                    <div class="box good">
+                        <strong>LoRA (Our System)</strong>
+                        <p>Updates: 3M params (0.1%)<br>
+                        VRAM: 4GB<br>
+                        Time: 5-10 minutes<br>
+                        Risk: Preserves knowledge</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="box">
+                <h3>Performance Metrics</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-num">100x</div>
+                        <div class="stat-label">Faster</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">0.1%</div>
+                        <div class="stat-label">Params</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">50MB</div>
+                        <div class="stat-label">Size</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="box" style="grid-column: span 3;">
+                <h3>Real Example: Before vs After</h3>
+                <div class="compare">
+                    <div class="box bad">
+                        <strong>Before Fine-tuning</strong>
+                        <p>User (age 10): "What is ML?"<br>
+                        Model: "Machine learning is a subset of artificial intelligence involving algorithms that improve through experience..."<br>
+                        <strong style="color: #ef4444;">Too complex for age 10</strong></p>
+                    </div>
+                    <div class="box good">
+                        <strong>After 20 Queries</strong>
+                        <p>User (age 10): "What is ML?"<br>
+                        Model: "Machine learning is like teaching a computer to learn from examples! Imagine showing a computer pictures of cats and dogs..."<br>
+                        <strong style="color: #22c55e;">Perfect for age 10!</strong></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="box" style="grid-column: span 3; background: linear-gradient(135deg, #e8f4f8 0%, #d4edda 100%); border-left: 5px solid #22c55e;">
+                <h3>Final Results After 500 Queries</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-num">+30.6%</div>
+                        <div class="stat-label">Relevance</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">+53.1%</div>
+                        <div class="stat-label">Age Appropriateness</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">+44.6%</div>
+                        <div class="stat-label">Personalization</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">92%</div>
+                        <div class="stat-label">User Satisfaction</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    MTMuon (Multi-Task Muon) Optimizer                   │
+│                     Nash Equilibrium-Based Multi-Task Learning          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                              ┌──────────────┐
+                              │  Two Tasks   │
+                              └──────┬───────┘
+                    ┌────────────────┴────────────────┐
+                    │                                 │
+            ┌───────▼────────┐              ┌────────▼────────┐
+            │ Classification │              │  Segmentation   │
+            │  (ImageNet)    │              │     (COCO)      │
+            │  100 classes   │              │   50 classes    │
+            └───────┬────────┘              └────────┬────────┘
+                    │                                │
+            ┌───────▼────────┐              ┌────────▼────────┐
+            │   L_cls Loss   │              │   L_seg Loss    │
+            └───────┬────────┘              └────────┬────────┘
+                    │                                │
+                    └────────────┬───────────────────┘
+                                 │
+        ╔════════════════════════▼════════════════════════════╗
+        ║  STEP 1: Multi-Task Loss (Nash Equilibrium)        ║
+        ║  L_combined = (L_cls + L_seg) / 2                   ║
+        ║  Equal weighting: 0.5 + 0.5 = 1.0                   ║
+        ╚════════════════════════╤════════════════════════════╝
+                                 │
+        ╔════════════════════════▼════════════════════════════╗
+        ║  STEP 2: Gradient Computation                       ║
+        ║  g_t = ∇L_combined = (∇L_cls + ∇L_seg) / 2          ║
+        ║  Prevents task dominance                            ║
+        ╚════════════════════════╤════════════════════════════╝
+                                 │
+        ╔════════════════════════▼════════════════════════════╗
+        ║  STEP 3: Momentum Buffer Update                     ║
+        ║  m_t = β·m_{t-1} + (1-β)·g_t                        ║
+        ║  β = 0.95 (momentum coefficient)                    ║
+        ║  Smooths gradient updates                           ║
+        ╚════════════════════════╤════════════════════════════╝
+                                 │
+        ╔════════════════════════▼════════════════════════════╗
+        ║  STEP 4: L2 Normalization                           ║
+        ║  m̂_t = m_t / ||m_t||₂                               ║
+        ║  ||m_t||₂ = √(Σ m_t[i]²)                            ║
+        ║  Forces ||m̂_t||₂ = 1 (unit vector)                  ║
+        ║  Direction-only, magnitude-invariant                ║
+        ╚════════════════════════╤════════════════════════════╝
+                                 │
+        ╔════════════════════════▼════════════════════════════╗
+        ║  STEP 5: Parameter Update                           ║
+        ║  θ_{t+1} = θ_t - α·m̂_t                              ║
+        ║  α = 0.02 (learning rate)                           ║
+        ║  Updates model parameters                           ║
+        ╚════════════════════════╤════════════════════════════╝
+                                 │
+                         ┌───────▼────────┐
+                         │ Updated Model  │
+                         │  Parameters    │
+                         └────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         KEY CHARACTERISTICS                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│  ✓ Nash Equilibrium: Equal task weighting (0.5/0.5)                    │
+│  ✓ Balanced Learning: No task dominates training                       │
+│  ✓ L2 Normalization: Scale-invariant updates                           │
+│  ✓ No Bias Correction: Equal weighting handles task balance            │
+│  ✓ Automatic Balancing: No manual weight tuning needed                 │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    ADVANTAGE OVER STANDARD MUON                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Standard Muon: L = L_task (single objective)                          │
+│  MTMuon:        L = (L_cls + L_seg) / 2 (multi-objective balanced)     │
+│                                                                         │
+│  Example:                                                               │
+│    ∇L_cls = [100, 50]  (large magnitude)                               │
+│    ∇L_seg = [10, 5]    (small magnitude)                               │
+│                                                                         │
+│    Without MTMuon: Combined = [110, 55]  ← Classification dominates    │
+│    With MTMuon:    Combined = [55, 27.5] ← Balanced (50/50)            │
+└─────────────────────────────────────────────────────────────────────────┘

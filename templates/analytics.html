@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Analytics</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>📚 EduRAG</h2>
+        <nav>
+            <a href="/chat">💬 Chat</a>
+            <a href="/quiz">📝 Quiz</a>
+            <a href="/exam">📋 Exams</a>
+            <a href="/practice">✏️ Practice</a>
+            <a href="/stats">📊 Stats</a>
+            <a href="/analytics" class="active">📈 Analytics</a>
+            <a href="/collab">👥 Collaborate</a>
+            <a href="/profile">👤 Profile</a>
+            <a href="#" id="logoutBtn">🚪 Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="chat-header">
+            <h1>📈 Advanced Analytics</h1>
+            <button id="refreshBtn" class="btn-primary">🔄 Refresh</button>
+        </div>
+
+        <div id="loadingAnalytics" style="text-align: center; padding: 40px;">
+            <p>Loading analytics...</p>
+        </div>
+
+        <div id="analyticsContent" style="display: none;">
+            <!-- Learning Patterns -->
+            <div class="analytics-section">
+                <h2>🧠 Learning Pattern Prediction</h2>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>⏰ Peak Learning Hours</h3>
+                        <div id="peakHours"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>📅 Active Days</h3>
+                        <div id="activeDays"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>🔥 Trending Topics</h3>
+                        <div id="trendingTopics"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>⚡ Learning Velocity</h3>
+                        <div id="velocity"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>🎯 Consistency Score</h3>
+                        <div id="consistency"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>🔮 Next Session</h3>
+                        <div id="nextSession"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Schedule -->
+            <div class="analytics-section">
+                <h2>📆 Personalized Study Schedule</h2>
+                <div class="schedule-info">
+                    <p><strong>Recommended Session Length:</strong> <span id="sessionLength"></span></p>
+                    <p><strong>Break Frequency:</strong> <span id="breakFreq"></span></p>
+                    <p><strong>Weekly Goal:</strong> <span id="weeklyGoal"></span></p>
+                </div>
+                <div id="studySchedule" class="schedule-grid"></div>
+            </div>
+
+            <!-- Knowledge Gaps -->
+            <div class="analytics-section">
+                <h2>🎓 Knowledge Gap Analysis</h2>
+                <div class="analytics-grid">
+                    <div class="analytics-card gap-card">
+                        <h3>⚠️ Weak Areas</h3>
+                        <div id="weakAreas"></div>
+                    </div>
+                    <div class="analytics-card gap-card">
+                        <h3>🔁 Repeated Questions</h3>
+                        <div id="repeatedQuestions"></div>
+                    </div>
+                    <div class="analytics-card gap-card">
+                        <h3>🌟 Unexplored Topics</h3>
+                        <div id="unexploredTopics"></div>
+                    </div>
+                </div>
+                
+                <div class="mastery-section">
+                    <h3>📊 Topic Mastery Levels</h3>
+                    <div id="masteryLevels"></div>
+                </div>
+
+                <div class="recommendations-section">
+                    <h3>💡 Recommendations</h3>
+                    <div id="recommendations"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let username = '';
+
+        async function checkAuth() {
+            const res = await fetch('/api/auth/session');
+            const data = await res.json();
+            if (!data.logged_in) {
+                window.location.href = '/login';
+                return false;
+            }
+            username = data.username;
+            return true;
+        }
+
+        async function loadAnalytics() {
+            document.getElementById('loadingAnalytics').style.display = 'block';
+            document.getElementById('analyticsContent').style.display = 'none';
+
+            try {
+                const res = await fetch(`/api/analytics?username=${username}`);
+                const data = await res.json();
+
+                if (data.learning_patterns) {
+                    displayLearningPatterns(data.learning_patterns);
+                }
+                if (data.study_schedule) {
+                    displayStudySchedule(data.study_schedule);
+                }
+                if (data.knowledge_gaps) {
+                    displayKnowledgeGaps(data.knowledge_gaps);
+                }
+
+                document.getElementById('loadingAnalytics').style.display = 'none';
+                document.getElementById('analyticsContent').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                document.getElementById('loadingAnalytics').innerHTML = '<p style="color: red;">Error loading analytics</p>';
+            }
+        }
+
+        function displayLearningPatterns(patterns) {
+            if (patterns.status === 'insufficient_data') {
+                document.getElementById('peakHours').innerHTML = '<p>Not enough data yet</p>';
+                return;
+            }
+
+            document.getElementById('peakHours').innerHTML = patterns.peak_hours.map(h => 
+                `<span class="badge">${h}</span>`
+            ).join(' ');
+
+            document.getElementById('activeDays').innerHTML = patterns.active_days.map(d => 
+                `<span class="badge">${d}</span>`
+            ).join(' ');
+
+            document.getElementById('trendingTopics').innerHTML = patterns.trending_topics.map(t => 
+                `<span class="badge badge-topic">${t}</span>`
+            ).join(' ');
+
+            document.getElementById('velocity').innerHTML = 
+                `<div class="stat-big">${patterns.learning_velocity}</div><p>queries/day</p>`;
+
+            const consistency = patterns.consistency_score;
+            const color = consistency >= 70 ? '#22c55e' : consistency >= 40 ? '#f59e0b' : '#ef4444';
+            document.getElementById('consistency').innerHTML = 
+                `<div class="stat-big" style="color: ${color}">${consistency}%</div>`;
+
+            document.getElementById('nextSession').innerHTML = 
+                `<p>${patterns.next_predicted_session}</p>`;
+        }
+
+        function displayStudySchedule(schedule) {
+            document.getElementById('sessionLength').textContent = schedule.recommended_session_length;
+            document.getElementById('breakFreq').textContent = schedule.break_frequency;
+            document.getElementById('weeklyGoal').textContent = schedule.weekly_goal;
+
+            const scheduleHTML = schedule.schedule.map(s => `
+                <div class="schedule-card priority-${s.priority}">
+                    <div class="schedule-day">${s.day}</div>
+                    <div class="schedule-time">${s.time}</div>
+                    <div class="schedule-topic">${s.topic}</div>
+                    <div class="schedule-duration">${s.duration}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('studySchedule').innerHTML = scheduleHTML || '<p>No schedule available yet</p>';
+        }
+
+        function displayKnowledgeGaps(gaps) {
+            if (gaps.status === 'insufficient_data') {
+                document.getElementById('weakAreas').innerHTML = '<p>Not enough data yet</p>';
+                return;
+            }
+
+            document.getElementById('weakAreas').innerHTML = gaps.weak_areas.length > 0
+                ? gaps.weak_areas.map(w => `<div class="gap-item weak">${w}</div>`).join('')
+                : '<p>No weak areas identified</p>';
+
+            document.getElementById('repeatedQuestions').innerHTML = gaps.repeated_questions.length > 0
+                ? gaps.repeated_questions.map(q => `<div class="gap-item">${q}</div>`).join('')
+                : '<p>No repeated questions</p>';
+
+            document.getElementById('unexploredTopics').innerHTML = gaps.unexplored_topics.length > 0
+                ? gaps.unexplored_topics.map(t => `<div class="gap-item unexplored">${t}</div>`).join('')
+                : '<p>All topics explored!</p>';
+
+            // Mastery levels
+            const masteryHTML = Object.entries(gaps.mastery_levels).map(([topic, data]) => {
+                const levelColor = {
+                    'beginner': '#ef4444',
+                    'intermediate': '#f59e0b',
+                    'advanced': '#22c55e'
+                }[data.level];
+
+                return `
+                    <div class="mastery-item">
+                        <div class="mastery-topic">${topic}</div>
+                        <div class="mastery-bar">
+                            <div class="mastery-fill" style="width: ${(data.queries / 20) * 100}%; background: ${levelColor}"></div>
+                        </div>
+                        <div class="mastery-label" style="color: ${levelColor}">${data.level} (${data.queries} queries)</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('masteryLevels').innerHTML = masteryHTML || '<p>No mastery data yet</p>';
+
+            // Recommendations
+            document.getElementById('recommendations').innerHTML = gaps.recommendations.map(r => 
+                `<div class="recommendation-item">💡 ${r}</div>`
+            ).join('');
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', loadAnalytics);
+
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/';
+        });
+
+        checkAuth().then(authed => {
+            if (authed) loadAnalytics();
+        });
+    </script>
+</body>
+</html>

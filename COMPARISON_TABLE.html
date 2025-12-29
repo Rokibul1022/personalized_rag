@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Comparison Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            padding: 40px;
+            margin: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            color: black;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background-color: #4a5568;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            border: 2px solid #2d3748;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border: 1px solid #cbd5e0;
+            color: black;
+            background-color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+        
+        tr:hover {
+            background-color: #edf2f7;
+        }
+        
+        .feature-col {
+            font-weight: bold;
+            background-color: #e2e8f0;
+        }
+        
+        .our-system {
+            background-color: #c6f6d5 !important;
+            font-weight: bold;
+        }
+        
+        .checkmark {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .cross {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+        
+        .references {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f7fafc;
+            border-left: 4px solid #4a5568;
+        }
+        
+        .references h3 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        
+        .references p {
+            margin: 8px 0;
+            color: #4a5568;
+        }
+        
+        .advantages {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #c6f6d5;
+            border-left: 4px solid #22c55e;
+            font-weight: bold;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <h1>COMPARISON WITH EXISTING SYSTEMS</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>ChatGPT/GPT-4 [1]</th>
+                <th>EduChat [2]</th>
+                <th>Cognitive Tutors [3]</th>
+                <th style="background-color: #22c55e;">Our System</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="feature-col">Personalization</td>
+                <td><span class="cross">NO</span> Generic responses</td>
+                <td><span class="warning">PARTIAL</span> Limited (instruction tuning)</td>
+                <td><span class="checkmark">YES</span> Rule-based</td>
+                <td class="our-system"><span class="checkmark">YES</span> Multi-layered (profile + history + adaptive)</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Continuous Learning</td>
+                <td><span class="cross">NO</span> Static model</td>
+                <td><span class="cross">NO</span> No learning</td>
+                <td><span class="cross">NO</span> Manual updates</td>
+                <td class="our-system"><span class="checkmark">YES</span> Automatic LoRA fine-tuning</td>
+            </tr>
+            <tr>
+                <td class="feature-col">User Knowledge Base</td>
+                <td><span class="cross">NO</span> No persistence</td>
+                <td><span class="cross">NO</span> No user KB</td>
+                <td><span class="warning">PARTIAL</span> Limited tracking</td>
+                <td class="our-system"><span class="checkmark">YES</span> Personal + Global KB</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Age Adaptation</td>
+                <td><span class="cross">NO</span> No age awareness</td>
+                <td><span class="warning">PARTIAL</span> Basic</td>
+                <td><span class="checkmark">YES</span> Domain-specific</td>
+                <td class="our-system"><span class="checkmark">YES</span> Dynamic prompt engineering</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Multimodal Input</td>
+                <td><span class="warning">PARTIAL</span> Text + Image</td>
+                <td><span class="cross">NO</span> Text only</td>
+                <td><span class="cross">NO</span> Text only</td>
+                <td class="our-system"><span class="checkmark">YES</span> Text + Voice + Image (OCR)</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Web Search</td>
+                <td><span class="checkmark">YES</span> Built-in</td>
+                <td><span class="cross">NO</span> No</td>
+                <td><span class="cross">NO</span> No</td>
+                <td class="our-system"><span class="checkmark">YES</span> Intelligent (Wikipedia + DuckDuckGo)</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Quiz Generation</td>
+                <td><span class="warning">PARTIAL</span> Manual prompting</td>
+                <td><span class="warning">PARTIAL</span> Basic</td>
+                <td><span class="checkmark">YES</span> Extensive</td>
+                <td class="our-system"><span class="checkmark">YES</span> Adaptive difficulty</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Fine-tuning Frequency</td>
+                <td><span class="cross">NO</span> Never</td>
+                <td><span class="cross">NO</span> Never</td>
+                <td><span class="cross">NO</span> Never</td>
+                <td class="our-system"><span class="checkmark">YES</span> Every 20 queries</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Response Time</td>
+                <td>2-3 seconds</td>
+                <td>3-5 seconds</td>
+                <td>Less than 1 second (rule-based)</td>
+                <td class="our-system">2-3 seconds</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Deployment</td>
+                <td>Cloud API</td>
+                <td>Cloud API</td>
+                <td>Local</td>
+                <td class="our-system">Local (privacy)</td>
+            </tr>
+            <tr>
+                <td class="feature-col">Cost</td>
+                <td>$0.03 per 1K tokens</td>
+                <td>Paid API</td>
+                <td>License required</td>
+                <td class="our-system">Free (open-source)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="references">
+        <h3>References:</h3>
+        <p>[1] Kasneci et al., "ChatGPT for Good? On Opportunities and Challenges of LLMs for Education", 2023</p>
+        <p>[2] Dai et al., "EduChat: A Large-Scale Language Model for Education", 2023</p>
+        <p>[3] Anderson et al., "Cognitive Tutors: Lessons Learned", 1995</p>
+    </div>
+    
+    <div class="advantages">
+        <strong>Key Advantages:</strong> Only system with automatic continuous learning + true personalization + local deployment
+    </div>
+</body>
+</html>

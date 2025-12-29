@@ -1,0 +1,20 @@
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   DATA LOADER   │    │   MODEL FORWARD │    │   LOSS COMPUTE  │
+│ (Batch Size:    │    │   (GPU async)   │    │   (Parallel)    │
+│   8/16/32)      │    │                 │    │                 │
+├─────────────────┤    ├─────────────────┤    ├─────────────────┤
+│ • Fixed batches │    │ • Encoder       │    │ • Class loss    │
+│ • Memory opt    │    │ • Head select   │    │ • Seg loss      │
+│ • Batch mixing  │    │ • Task routing  │    │ • Weight sum    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+           │                    │                    │
+           └────────────────────┼────────────────────┘
+                                ▼
+                     ┌────────────────────┐
+                     │  GRADIENT UPDATE   │
+                     │ (Batch Size Sync)  │
+                     ├────────────────────┤
+                     │ • Optimizer step   │
+                     │ • Weight update    │
+                     │ • Batch metrics    │
+                     └────────────────────┘

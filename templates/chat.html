@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - StudyRAG</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 StudyRAG</h2>
+                <p id="username-display"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/chat" class="nav-item active">
+                    <span class="icon">💬</span> Chat
+                </a>
+                <a href="/practice" class="nav-item">
+                    <span class="icon">✏️</span> Practice
+                </a>
+                <a href="/quiz" class="nav-item">
+                    <span class="icon">📝</span> Quiz
+                </a>
+                <a href="/exam" class="nav-item">
+                    <span class="icon">📚</span> Exam Preparation
+                </a>
+                <a href="/stats" class="nav-item">
+                    <span class="icon">📊</span> Stats
+                </a>
+                <a href="/profile" class="nav-item">
+                    <span class="icon">👤</span> Profile
+                </a>
+                <a href="/collab" class="nav-item">
+                    <span class="icon">🤝</span> Collaboration
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="font-size: 0.9rem; color: #666;">LLM Model:</label>
+                    <select id="modelSelect" class="btn btn-secondary btn-block" style="padding: 0.5rem; margin-top: 0.25rem;">
+                        <option value="deepseek-r1:1.5b">DeepSeek-R1 1.5B</option>
+                        <option value="qwen2.5:3b">Qwen 2.5 3B</option>
+                        <option value="qwen2.5:7b">Qwen 2.5 7B</option>
+                    </select>
+                </div>
+                <button id="darkModeToggle" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;">
+                    <span id="themeIcon">🌙</span> Dark Mode
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="chat-container">
+                
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <p>👋 Hello! I'm your AI learning assistant powered by StudyRAG AI. How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <form id="chatForm">
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <button type="button" id="imageBtn" class="btn btn-secondary" title="Upload Image">📷</button>
+                        <button type="button" id="codeBtn" class="btn btn-secondary" title="Code Playground">💻</button>
+                        <button type="button" id="voiceBtn" class="btn btn-secondary" title="Voice Input">🎤</button>
+                        <button type="button" id="webSearchBtn" class="btn btn-secondary" title="Web Search">🔍</button>
+                        <button type="button" id="exportChatBtn" class="btn btn-secondary" title="Export Chat">💾</button>
+                        <input type="text" id="messageInput" placeholder="Type your question..." autocomplete="off">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Code Playground Modal -->
+    <div id="codeModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>💻 Code Playground</h2>
+            <select id="languageSelect" style="margin-bottom: 1rem; padding: 0.5rem;">
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+            </select>
+            <textarea id="codeEditor" placeholder="Write your code here..." style="width: 100%; height: 300px; font-family: monospace; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            <button id="runCodeBtn" class="btn btn-primary" style="margin-top: 1rem;">▶️ Run Code</button>
+            <div id="codeOutput" style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 4px; font-family: monospace; white-space: pre-wrap; display: none;"></div>
+        </div>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/chat.js"></script>
+</body>
+</html>

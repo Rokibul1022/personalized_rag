@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - StudyRAG</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 StudyRAG</h2>
+                <p id="username-display"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/chat" class="nav-item">
+                    <span class="icon">💬</span> Chat
+                </a>
+                <a href="/practice" class="nav-item">
+                    <span class="icon">✏️</span> Practice
+                </a>
+                <a href="/quiz" class="nav-item">
+                    <span class="icon">📝</span> Quiz
+                </a>
+                <a href="/exam" class="nav-item">
+                    <span class="icon">📚</span> Exam Preparation
+                </a>
+                <a href="/stats" class="nav-item">
+                    <span class="icon">📊</span> Stats
+                </a>
+                <a href="/profile" class="nav-item active">
+                    <span class="icon">👤</span> Profile
+                </a>
+                <a href="/collab" class="nav-item">
+                    <span class="icon">🤝</span> Collaboration
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="darkModeToggle" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;">
+                    <span id="themeIcon">🌙</span> Dark Mode
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>👤 Your Profile</h2>
+                    <p>Manage your learning preferences</p>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="grade">Grade/Class</label>
+                            <input type="text" id="grade" name="grade">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="favorite_topics">Favorite Topics</label>
+                        <input type="text" id="favorite_topics" name="favorite_topics">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="weak_topics">Topics Needing Help</label>
+                        <input type="text" id="weak_topics" name="weak_topics">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="learning_style">Learning Style</label>
+                        <select id="learning_style" name="learning_style">
+                            <option value="general">General</option>
+                            <option value="visual">Visual</option>
+                            <option value="auditory">Auditory</option>
+                            <option value="hands-on">Hands-on</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty">Preferred Difficulty</label>
+                        <select id="difficulty" name="difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goals">Learning Goals</label>
+                        <textarea id="goals" name="goals" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">Update Profile</button>
+                </form>
+                
+                <div id="successMessage" class="success-message" style="display:none;">Profile updated successfully!</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/profile.js"></script>
+</body>
+</html>
